@@ -1,0 +1,25 @@
+//This is a work in progress
+
+//For Querying API, will update with better
+//documentation when I get the exact Query
+//code for powershell
+// IMPORTANT : set protocol:
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+//Our Auth Token - PVGjhHLj8Svy7Ryz0uJgW9IBh
+
+//Auth Token so they don't throttle the download
+$apptoken = "PVGjhHLj8Svy7Ryz0uJgW9IBh"
+
+//address of our dataset - specifying that we want the csv
+$url = "https://data.cityofnewyork.us/resource/fhrw-4uyv.csv"
+$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+$headers.Add("Accept","application/json")
+$headers.Add("X-App-Token",$apptoken)
+$results = Invoke-RestMethod -Uri $url -Method get -Headers $headers
+
+//to view
+$results | ft
+
+//working on export
+//Trying to research Export-Csv
