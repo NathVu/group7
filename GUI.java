@@ -1,55 +1,111 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
-import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-import javafx.scene.layout.StackPane;
 import javafx.scene.control.TextField;
 import javafx.scene.text.*;
-import javax.swing.JTextField;
-import javafx.scene.Group;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.paint.Color;
+import javafx.scene.layout.Priority;
+import javafx.scene.Group;
 public class GUI extends Application{
-	 private TableView table = new TableView();
-	    public void start(Stage primaryStage) {
+	
+		private TableView table = new TableView();
+		
+	   	public void start(Stage primaryStage) {
+	   		
 	        Text te1 = new Text("from:");
 	        Text te2 = new Text("to:");
-	        TextField t1 = new TextField("");
-	        TextField t2 = new TextField("");
+	        Text te3 = new Text("ID:");
+	        
+	        TextField tf1 = new TextField("");
+	        TextField tf2 = new TextField("");
+	        TextField tf3 = new TextField("");
+	        addTextLimiter(tf1,5);
+	        addTextLimiter(tf2,5);
+	        addTextLimiter(tf3,8);
+	        
 	        Button btn1 = new Button("Search");
 	        btn1.setOnAction(new EventHandler<ActionEvent>() {
 	            public void handle(ActionEvent event) {
 	            	
 	            }
 	        });
+	        
 	        table.setEditable(false);
-	        TableColumn dateCol = new TableColumn("Date");
-	        TableColumn timeCol = new TableColumn("Time");
+	        
+	        TableColumn idCol = new TableColumn("ID");
+	        idCol.setMinWidth(100);
+	        
+	        TableColumn dateCol = new TableColumn("Open Date and Time");
+	        dateCol.setMinWidth(150);
+	        
+	        TableColumn closeCol = new TableColumn("Closed Date and Time");
+	        closeCol.setMinWidth(150);
+	        
 	        TableColumn typeCol = new TableColumn("Type of Call");
-	        table.getColumns().addAll(dateCol, timeCol, typeCol);
-	        HBox top = new HBox(5);
-	        top.getChildren().addAll(te1,t1,te2,t2,btn1);
-	        VBox buttons = new VBox(4);
-	        top.setAlignment(Pos.CENTER);
-	        buttons.getChildren().addAll(top,table);
+	        typeCol.setMinWidth(100);
 	        
+	        TableColumn addCol = new TableColumn("Address");
+	        TableColumn streetCol = new TableColumn("Street");
+	        streetCol.setMinWidth(200);
+	        TableColumn zipCol = new TableColumn("Zip Code");
+	        zipCol.setMinWidth(100);
+	        addCol.getColumns().addAll(streetCol,zipCol);
 	        
-	        Scene scene = new Scene(buttons, 900, 750);
+	        TableColumn depCol = new TableColumn("Department");
+	        depCol.setMinWidth(100);
+	       
+	        TableColumn statCol = new TableColumn("Status");
+	        statCol.setMinWidth(100);
+	        
+	        table.getColumns().addAll(idCol,dateCol,closeCol,typeCol,depCol,addCol,statCol);
+	        
+	        HBox top1 = new HBox(5);
+	        top1.getChildren().addAll(te1,tf1,te2,tf2,te3,tf3,btn1);
+	        top1.setAlignment(Pos.CENTER);
+	        top1.setSpacing(10);
+	        
+	        HBox top2 = new HBox(1);
+	        top2.getChildren().addAll(table);
+	        top2.setAlignment(Pos.CENTER);
+
+	        VBox bot = new VBox();
+	        bot.getChildren().addAll(new HBox(),top1,top2);
+	        bot.setSpacing(10);
+	        bot.setAlignment(Pos.CENTER);
+	        bot.setVgrow(top1, Priority.ALWAYS);
+	        bot.setVgrow(top2, Priority.ALWAYS);
+	        
+	        Group root = new Group();
+	        root.getChildren().addAll(bot);
+	        
+	        Scene scene = new Scene(root,1000,500);
 	        
 	        primaryStage.setTitle("311 Calls");
 	        primaryStage.setScene(scene);
 	        primaryStage.show();
 	    }
+	    public static void addTextLimiter(final TextField tf, final int maxLength) {
+	        tf.textProperty().addListener(new ChangeListener<String>() {
+	            @Override
+	            public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+	                if (tf.getText().length() > maxLength) {
+	                    String s = tf.getText().substring(0, maxLength);
+	                    tf.setText(s);
+	                }
+	            }
+	        });
+	    }
 	    public static void main(String[] args) {
 	        launch(args);
-	    }
-	    
+	    }  
 }
