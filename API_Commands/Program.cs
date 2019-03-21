@@ -11,6 +11,17 @@ namespace ConsoleApp1
         {
             ManageDB test = new ManageDB();
             var results = test.LoadDB();
+
+
+            //IEnumerator<Json311> index = results.GetEnumerator();
+
+
+            var rarr = results.ToArray();
+            var val = rarr[0];//.ToString();
+            Console.WriteLine(val.Values.Count());
+            Console.ReadKey();
+       
+
         }
 
     }
@@ -31,7 +42,7 @@ namespace ConsoleApp1
         /// loadDB connects to the database, sends the query and then returns the data
         /// </summary>
         /// <returns>Returns the dataset of the query to main</returns>
-        public IEnumerable<Dictionary<string,object>> LoadDB()
+        public IEnumerable<Dictionary<string, object>> LoadDB()
         {
 
             
@@ -50,13 +61,13 @@ namespace ConsoleApp1
              /// You must use either Dictionary(String,Object) - use <> but not allowed in XML comments
              /// OR a user-defined json serializable class
              ///</remarks>
-            SODA.Resource<Dictionary<string,object>> dataset = client.GetResource<Dictionary<string, object>>("fhrw-4uyv");
+            SODA.Resource<Dictionary<string, object>> dataset = client.GetResource<Dictionary<string, object>>("fhrw-4uyv");
 
             ///<remarks>
             ///This is a test for our user defined serializable class
             ///It may be implemented in later versions 
             ///</remarks>
-            //SODA.Resource<Json311> dataset = client.GetResource<Json311>("fhrw-4uyv"); //testing our serializable json class
+            //SODA.Resource<Dictionary<string, object>> dataset = client.GetResource<Dictionary<string, object>>("fhrw-4uyv"); //testing our serializable json class
 
             ///<summary>
             /// instantiate our object and get our query from GetQueryDate()
@@ -82,8 +93,6 @@ namespace ConsoleApp1
             test.TestIEnum(ref results, out SizeOfList);
             Console.WriteLine(SizeOfList);
 
-            Console.WriteLine();
-            Console.ReadKey();
 
             return results;
         }
@@ -134,7 +143,7 @@ namespace ConsoleApp1
             ///<remarks>
             /// just a quick test to make sure the date is in the format we want
             /// </remarks>
-            Console.WriteLine(date);
+            //Console.WriteLine(date);
 
             ///<remarks>
             /// A test case just to test that the connection is working
