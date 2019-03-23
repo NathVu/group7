@@ -1,10 +1,12 @@
 .root {
-    -fx-background-color: white;
-    -fx-font-weight: bold;
-    -fx-font-family: Elephant;
+    -fx-background-color: lightgray;
+    -fx-font-family: "Courier New";
     -fx-effect: dropshadow(three-pass-box, steelblue, 50, 0.5, 0, 0);
 }
-
+#title {
+     -fx-font-weight: bold;
+     -fx-font-size: 40;
+}
 .label {
     -fx-background-color: lightsteelblue;
     -fx-background-radius: 0;
@@ -23,6 +25,7 @@
 .button{
     -fx-background-color: lightsteelblue;
     -fx-text-fill: black;
+    -fx-font-weight: bold;
     -fx-background-radius: 20;
     -fx-border-style: none;
     -fx-font-size: large;
@@ -30,4 +33,7 @@
 
 .button:hover {
     -fx-background-color: linear-gradient(lightgray, lightcyan);
+}
+.table-view{
+   -fx-background-color: white;
 }

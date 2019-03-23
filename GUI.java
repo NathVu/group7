@@ -13,26 +13,31 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.*;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.paint.Color;
-import javafx.scene.layout.Priority;
-import javafx.scene.Group;
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 public class GUI extends Application{
 
     private TableView table = new TableView();
 
     public void start(Stage primaryStage) {
-
-        Text te1 = new Text("From:");
-        Text te2 = new Text("To:");
+    	
+    	Text title = new Text("311 Calls Manager");
+    	title.setId("title");
+        Text te1 = new Text("From (HH:MM):");
+        Text te2 = new Text("To (HH:MM):");
         Text te3 = new Text("ID:");
+        Text te4 = new Text("Date (MM/DD/YYYY)");
 
         TextField tf1 = new TextField("");
         TextField tf2 = new TextField("");
         TextField tf3 = new TextField("");
+        TextField tf4 = new TextField("");
         addTextLimiter(tf1,5);
         addTextLimiter(tf2,5);
         addTextLimiter(tf3,8);
+        addTextLimiter(tf4,10);
 
         Button btn1 = new Button("Search");
         btn1.setOnAction(new EventHandler<ActionEvent>() {
@@ -45,15 +50,15 @@ public class GUI extends Application{
 
         TableColumn idCol = new TableColumn("ID");
         idCol.setMinWidth(100);
-
+     
         TableColumn dateCol = new TableColumn("Open Date and Time");
         dateCol.setMinWidth(150);
 
         TableColumn closeCol = new TableColumn("Closed Date and Time");
-        closeCol.setMinWidth(150);
+        closeCol.setMinWidth(175);
 
         TableColumn typeCol = new TableColumn("Type of Call");
-        typeCol.setMinWidth(100);
+        typeCol.setMinWidth(175);
 
         TableColumn addCol = new TableColumn("Address");
         TableColumn streetCol = new TableColumn("Street");
@@ -68,10 +73,10 @@ public class GUI extends Application{
         TableColumn statCol = new TableColumn("Status");
         statCol.setMinWidth(100);
 
-        table.getColumns().addAll(idCol,dateCol,closeCol,typeCol,depCol,addCol,statCol);
+        table.getColumns().addAll(idCol,dateCol,closeCol,depCol,typeCol,addCol,statCol);
 
         HBox top1 = new HBox(5);
-        top1.getChildren().addAll(te1,tf1,te2,tf2,te3,tf3,btn1);
+        top1.getChildren().addAll(te4,tf4,te1,tf1,te2,tf2,te3,tf3,btn1);
         top1.setAlignment(Pos.CENTER);
         top1.setSpacing(10);
 
@@ -79,22 +84,20 @@ public class GUI extends Application{
         top2.getChildren().addAll(table);
         top2.setAlignment(Pos.CENTER);
 
-        VBox bot = new VBox();
-        bot.getChildren().addAll(new HBox(),top1,top2);
-        bot.setSpacing(10);
-        bot.setAlignment(Pos.CENTER);
-        bot.setVgrow(top1, Priority.ALWAYS);
-        bot.setVgrow(top2, Priority.ALWAYS);
-
-        Group root = new Group();
-        root.getChildren().addAll(bot);
-
-        Scene scene = new Scene(root,1050,500);
-        scene.getStylesheets().add("Format.css");
-
+        VBox root = new VBox();
+        root.getChildren().addAll(new HBox(),title,top1,top2);
+        root.setSpacing(10);
+        root.setAlignment(Pos.TOP_CENTER);
+        
+        ObservableList<ObservableList> csvData = FXCollections.observableArrayList();
+        
+        Scene scene = new Scene(root,1200,700);
+        scene.getStylesheets().add("GUI_CSS_Format.css");
+        
         primaryStage.setTitle("311 Calls");
         primaryStage.setScene(scene);
         primaryStage.show();
+        
     }
     public static void addTextLimiter(final TextField tf, final int maxLength) {
         tf.textProperty().addListener(new ChangeListener<String>() {
