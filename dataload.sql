@@ -1,4 +1,6 @@
-CREATE TABLE totservicerequests (
+DROP TABLE IF EXISTS totalrequests;
+
+CREATE TABLE totalrequests (
     unique_key text,
     created_date timestamp,
     closed_date timestamp,
@@ -24,8 +26,8 @@ CREATE TABLE totservicerequests (
     community_board text,
     bbl text,
     borough text,
-    x_coordinate_state_plane numeric,
-    y_coordinate_state_plane numeric,
+    x_coordinate_state_plane NUMERIC,
+    y_coordinate_state_plane NUMERIC,
     open_data_channel_type text,
     park_facility_name text,
     park_borough text,
@@ -36,8 +38,8 @@ CREATE TABLE totservicerequests (
     bridge_highway_direction text,
     road_ramp text,
     bridge_highway_segment text,
-    latitude decimal(10,7),
-    longitude decimal(2,7),
+    latitude NUMERIC(10, 8),
+    longitude NUMERIC(10, 8),
     location_city text,
     location point,
     location_address text,
@@ -45,4 +47,4 @@ CREATE TABLE totservicerequests (
     location_state text
 );
 
-\COPY totservicerequests FROM './311_Service_Requests_from_03112019.csv' WITH (FORMAT csv);
+\COPY totalrequests FROM './311_Service_Requests_from_03112019.csv' WITH (FORMAT csv, HEADER, DELIMITER ',');
