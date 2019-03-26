@@ -1,28 +1,30 @@
 .root {
-    -fx-background-color: lightgray;
+    -fx-background-color: aliceblue;
     -fx-font-family: "Courier New";
-    -fx-effect: dropshadow(three-pass-box, steelblue, 50, 0.5, 0, 0);
 }
+
 #title {
-     -fx-font-weight: bold;
-     -fx-font-size: 40;
+    -fx-font-weight: normal;
+    -fx-font-size: 50;
+    -fx-effect: dropshadow(three-pass-box, gray, 10, 0.5, 0, 0);
+
 }
 .label {
     -fx-background-color: lightsteelblue;
     -fx-background-radius: 0;
     -fx-text-fill: black;
     -fx-border-style: solid;
-    -fx-border-color: white;
+    -fx-border-color: ghostwhite;
     -fx-border-width: 1px;
-    -fx-font-weight: lighter;
+    -fx-font-weight: normal;
     -fx-font-size: medium;
 }
 
 .label:hover {
-    -fx-background-color: linear-gradient(lightgray, lightcyan);
+    -fx-background-color: linear-gradient(lightgray, lightsteelblue);
 }
 
-.button{
+.button {
     -fx-background-color: lightsteelblue;
     -fx-text-fill: black;
     -fx-font-weight: bold;
@@ -32,8 +34,12 @@
 }
 
 .button:hover {
-    -fx-background-color: linear-gradient(lightgray, lightcyan);
+    -fx-background-color: linear-gradient(lightgray, lightsteelblue);
 }
-.table-view{
-   -fx-background-color: white;
+
+.table-view {
+    -fx-background-color: ghostwhite;
+    -fx-border-style: solid;
+    -fx-border-width: 3px;
+    -fx-effect: dropshadow(three-pass-box, gray, 18, 0.5, 0, 0);
 }
