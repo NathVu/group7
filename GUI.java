@@ -25,10 +25,10 @@ public class GUI extends Application{
     	
     	Text title = new Text("311 Calls Manager");
     	title.setId("title");
-        Text te1 = new Text("From (HH:MM):");
-        Text te2 = new Text("To (HH:MM):");
+        Text te1 = new Text("From(HH:MM):");
+        Text te2 = new Text("To(HH:MM):");
         Text te3 = new Text("ID:");
-        Text te4 = new Text("Date (MM/DD/YYYY)");
+        Text te4 = new Text("Date(MM/DD/YYYY):");
 
         TextField tf1 = new TextField("");
         TextField tf2 = new TextField("");
@@ -41,6 +41,13 @@ public class GUI extends Application{
 
         Button btn1 = new Button("Search");
         btn1.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+
+            }
+        });
+        
+        Button btn2 = new Button("Reset");
+        btn2.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
 
             }
@@ -76,7 +83,7 @@ public class GUI extends Application{
         table.getColumns().addAll(idCol,dateCol,closeCol,depCol,typeCol,addCol,statCol);
 
         HBox top1 = new HBox(5);
-        top1.getChildren().addAll(te4,tf4,te1,tf1,te2,tf2,te3,tf3,btn1);
+        top1.getChildren().addAll(te4,tf4,te1,tf1,te2,tf2,te3,tf3,btn1,btn2);
         top1.setAlignment(Pos.CENTER);
         top1.setSpacing(10);
 
