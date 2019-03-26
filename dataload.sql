@@ -1,4 +1,11 @@
 DROP TABLE IF EXISTS totalrequests;
+DROP TABLE IF EXISTS keytable;
+DROP TABLE IF EXISTS resolvedrequests;
+DROP TABLE IF EXISTS unresolvedrequests;
+DROP TABLE IF EXISTS timeorder;
+DROP TABLE IF EXISTS geographiclocation;
+
+SET client_encoding = 'LATIN1';
 
 CREATE TABLE totalrequests (
     unique_key text,
@@ -44,3 +51,30 @@ CREATE TABLE totalrequests (
 );
 
 \COPY totalrequests FROM './311_Service_Requests_from_03112019.csv' WITH (FORMAT csv, HEADER, DELIMITER ',');
+
+CREATE TABLE keytable AS
+    SELECT unique_key, created_date, closed_date, complaint_type, agency_name, incident_address, incident_zip, status
+    FROM totalrequests
+    ORDER BY created_date;
+    
+CREATE TABLE resolvedrequests AS
+    SELECT unique_key, created_date, closed_date, complaint_type, agency_name, incident_address, incident_zip, status
+    FROM totalrequests
+    WHERE closed_date IS NOT NULL
+    ORDER BY created_date;
+
+CREATE TABLE unresolvedrequests AS
+    SELECT unique_key, created_date, closed_date, complaint_type, agency_name, incident_address, incident_zip, status
+    FROM totalrequests
+    WHERE closed_date IS NULL
+    ORDER BY created_date;
+
+CREATE TABLE timeorder AS
+    SELECT unique_key, created_date, closed_date, complaint_type, agency_name, incident_address, incident_zip, status
+    FROM totalrequests
+    ORDER BY created_date;
+    
+CREATE TABLE geographiclocation AS
+   SELECT borough, unique_key, created_date, closed_date, complaint_type, agency_name, incident_address, incident_zip
+    FROM totalrequests
+    ORDER BY borough;
