@@ -18,7 +18,8 @@ CREATE TABLE totalrequests (
     intersection_street_2 text,
     address_type text,
     city text,
-    landmark text, facility_type text,
+    landmark text, 
+    facility_type text,
     status text,
     due_date timestamp,
     resolution_description text,
@@ -26,8 +27,8 @@ CREATE TABLE totalrequests (
     community_board text,
     bbl text,
     borough text,
-    x_coordinate_state_plane NUMERIC,
-    y_coordinate_state_plane NUMERIC,
+    x_coordinate_state_plane numeric,
+    y_coordinate_state_plane numeric,
     open_data_channel_type text,
     park_facility_name text,
     park_borough text,
@@ -38,13 +39,8 @@ CREATE TABLE totalrequests (
     bridge_highway_direction text,
     road_ramp text,
     bridge_highway_segment text,
-    latitude NUMERIC(10, 8),
-    longitude NUMERIC(10, 8),
-    location_city text,
-    location point,
-    location_address text,
-    location_zip text,
-    location_state text
+    latitude numeric(10, 8),
+    longitude numeric(10, 8)
 );
 
 \COPY totalrequests FROM './311_Service_Requests_from_03112019.csv' WITH (FORMAT csv, HEADER, DELIMITER ',');
