@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 using SODA;
-using Json311;
+//using Json311;
 
 namespace ConsoleApp1
 {
@@ -50,16 +49,26 @@ namespace ConsoleApp1
         public List<Json311.Json311> parseData(Dictionary<string, object>[] dataset)
         {
             List<Json311.Json311> dataList = new List<Json311.Json311>();
-            
-
+            DateTime date = DateTime.Today.Date.AddDays(-1);
+            Console.WriteLine(date);
+            int countY = 0, countT = 0; 
             for (int i = 0; i < dataset.Length; i++)
             {
                 Json311.Json311 dItem = new Json311.Json311(dataset[i]);
-                //if(dItem.Created_date > )
-                dataList.Add(dItem);
-                Console.WriteLine("working: " + i);
+               if(dItem.Created_date < date)
+                {
+                    dataList.Add(dItem);
+                    //Console.WriteLine("Yesterday: " + dItem.Created_date);
+                    countY++;
+                }
+                else
+                {
+                    countT++;
+                    Console.WriteLine("today: " + dItem.Created_date);
+                }
+                
             }
-
+            Console.WriteLine("Today: " + countT + "     Yesterday: " + countY);
             return dataList;
         }
 
@@ -107,7 +116,7 @@ namespace ConsoleApp1
         /// API KEY - PVGjhHLj8Svy7Ryz0uJgW9IBh
         /// loadDB connects to the database, sends the query and then returns the data
         /// </summary>
-        /// <returns>Returns the dataset of the query to main</returns>
+        /// <returns>Returns the da taset of the query to main</returns>
         public IEnumerable<Dictionary<string, object>> LoadDB()
         {
 
