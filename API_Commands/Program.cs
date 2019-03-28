@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using SODA;
-//using Json311;
+using Json311;
+using PgsqlDriver;
+using Npgsql;
 
 namespace ConsoleApp1
 {
@@ -10,22 +12,15 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
+
             DataFormat test = new DataFormat();
             Dictionary<string, object>[] rarr = test.getData();
-            test.parseData(rarr);
+            List<Json311.Json311> forDB = new List<Json311.Json311>();
+            forDB = test.parseData(rarr);
+            SqlConnect testConnect = new SqlConnect();
+            NpgsqlConnection conn = testConnect.Connect();
+            testConnect.CheckDate(conn);
             Console.ReadKey();
-
-            /*
-             * Temp Code: holding here until incorporated into our program 
-             * var val = rarr[0];
-             * Console.WriteLine(val.Values.Count());
-             * foreach (KeyValuePair<string, object> iterate in val)
-             * {
-             *   Console.WriteLine(iterate.Key + " " + iterate.Value.GetType());
-             * }
-             * Console.ReadKey();
-             * 
-             */
 
         }
 
@@ -58,7 +53,6 @@ namespace ConsoleApp1
                if(dItem.Created_date < date)
                 {
                     dataList.Add(dItem);
-                    //Console.WriteLine("Yesterday: " + dItem.Created_date);
                     countY++;
                 }
                 else
@@ -155,6 +149,7 @@ namespace ConsoleApp1
             int SizeOfList;
             test.TestIEnum(ref results, out SizeOfList);
             Console.WriteLine(SizeOfList);
+            Console.ReadKey();
             return results;
         }
 
@@ -191,8 +186,8 @@ namespace ConsoleApp1
             /// Since the data is only updated every day for the day before in part and fully for 
             /// 2 days before we get the dates for yesterday and the day before for filtering
             /// </remarks>
-            String day = (today.Day - 1).ToString();
-            String yday = (today.Day - 2).ToString();
+            String day = (today.Day - 3).ToString();
+            String yday = (today.Day -2).ToString();
 
             /// <remarks>
             ///The date field in the Query needs to be of type
@@ -223,7 +218,7 @@ namespace ConsoleApp1
             /// Will be updated again when we find out when exactly the data is updated every day
             /// </remarks>
             SODA.SoqlQuery soql;
-            if (today.Hour > 19)
+            if (today.Hour > 10)
             {
                 soql = new SoqlQuery().Select("*").Where(cdate + ">" + date);
             }
@@ -247,8 +242,3 @@ namespace ConsoleApp1
     }
 
 }
-
-
-
-
-    
