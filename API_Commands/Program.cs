@@ -18,8 +18,9 @@ namespace ConsoleApp1
             List<Json311.Json311> forDB = new List<Json311.Json311>();
             forDB = test.parseData(rarr);
             SqlConnect testConnect = new SqlConnect();
-            NpgsqlConnection conn = testConnect.Connect();
-            testConnect.CheckDate(conn);
+            String connString = testConnect.Connect();
+            testConnect.CheckDate(connString);
+            testConnect.Import(forDB, connString);
             Console.ReadKey();
 
         }
@@ -45,7 +46,6 @@ namespace ConsoleApp1
         {
             List<Json311.Json311> dataList = new List<Json311.Json311>();
             DateTime date = DateTime.Today.Date.AddDays(-1);
-            Console.WriteLine(date);
             int countY = 0, countT = 0; 
             for (int i = 0; i < dataset.Length; i++)
             {
@@ -58,7 +58,6 @@ namespace ConsoleApp1
                 else
                 {
                     countT++;
-                    Console.WriteLine("today: " + dItem.Created_date);
                 }
                 
             }
@@ -84,11 +83,6 @@ namespace ConsoleApp1
             Dictionary<string, object>[] results_arr = results.ToArray();
             Dictionary<string, object> val = results_arr[0];
             Console.WriteLine(val.Values.Count());
-            foreach (KeyValuePair<string, object> iterate in val)
-            {
-                Console.WriteLine(iterate.Key.ToString() + " " + iterate.Value.GetType() + " " + iterate.Value);
-            }
-            Console.ReadKey();
             return results_arr;
         }
     }
@@ -149,7 +143,6 @@ namespace ConsoleApp1
             int SizeOfList;
             test.TestIEnum(ref results, out SizeOfList);
             Console.WriteLine(SizeOfList);
-            Console.ReadKey();
             return results;
         }
 
@@ -218,7 +211,7 @@ namespace ConsoleApp1
             /// Will be updated again when we find out when exactly the data is updated every day
             /// </remarks>
             SODA.SoqlQuery soql;
-            if (today.Hour > 10)
+            if (today.Hour < 10)
             {
                 soql = new SoqlQuery().Select("*").Where(cdate + ">" + date);
             }

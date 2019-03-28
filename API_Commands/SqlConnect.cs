@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Json311;
 using Npgsql;
+using Newtonsoft.Json.Linq;
+using NpgsqlTypes;
 
 namespace PgsqlDriver
 {
@@ -22,26 +24,48 @@ namespace PgsqlDriver
         /// <summary>
         /// Establishes a connection between the program and our database (which will hopefully be hosted on azure 
         /// </summary>
-        public NpgsqlConnection Connect()
+        public String Connect()
         {
             String user = Authenticate(out String pass);
-            string connString = "Host=localhost;Username=" + user + ";Password=" + pass + ";Database=group7";
-            using (var conn = new NpgsqlConnection(connString))
+            Console.Write("Testing Connection: ");
+            String connString = "Host=localhost;Username=" + user + ";Password=" + pass + ";Database=group7";
+            try
             {
-                conn.Open();
-                this.CheckConnection(conn);
-                return conn;
-            }
+                using (var conn = new NpgsqlConnection(connString))
+                {
+                    conn.Open();
+                    this.CheckConnection(conn);
+                    conn.Close();
+                    return connString;
+                }
+            }    catch(Npgsql.PostgresException)
+                 {
+                    Console.WriteLine("Your username and password do not match, try again");
+                    this.Connect();
+                }
+
+            return "failed";
+            
         }
 
         /// <summary>
         /// make sure a connection has been established to the database
+        /// Will also attempt to reconnect if the connection is checked and is no longer working
+        /// Althogh connection is dropped when you leave scope since we are still inside the function
+        /// when we make this call the connection stays open
         /// </summary>
         /// <param name="conn">The connection we are testing</param>
         public void CheckConnection(NpgsqlConnection conn)
         {
             if(conn.State == System.Data.ConnectionState.Open)
-                    Console.WriteLine("Connection Established");
+            {
+                Console.WriteLine("Connection Established");
+            }
+            else
+            {
+                Console.WriteLine("Connection Dropped, Please re-enter credentials");
+                this.Connect();
+            }
         }
 
         /// <summary>
@@ -101,11 +125,116 @@ namespace PgsqlDriver
         /// Our import command to import the data for the day into our pgsql database
         /// </summary>
         /// <param name="dataset">Our current DataSet to load into our DB</param>
-        public void Import(List<Json311.Json311> dataset, NpgsqlConnection conn)
+        public void Import(List<Json311.Json311> dataset, String connString)
         {
-            foreach(Json311.Json311 entry in dataset)
+            using (var conn = new NpgsqlConnection(connString))
             {
+                conn.Open();
+                this.CheckConnection(conn);
+                conn.TypeMapper.UseJsonNet();
 
+                /// <remarks>
+                /// postgres does not support nullable datetimes so we check the DateTime fields and
+                /// write a null if the value is null
+                /// if not we cast the nullable datetime to datetime and then write that
+                /// </remarks>
+                using (var writer = conn.BeginBinaryImport("COPY test FROM STDIN (FORMAT BINARY)"))
+                {
+                    foreach (Json311.Json311 entry in dataset)
+                    {
+                        writer.StartRow();
+                        writer.Write(entry.Unique_key);
+
+                        if(entry.Created_date==null)
+                        {
+                            writer.WriteNull();
+                        }
+                        else
+                        {
+                            NpgsqlDateTime cdate = Convert.ToDateTime(entry.Created_date);
+                            writer.Write(cdate);
+                        }
+
+
+                        if (entry.Closed_date == null)
+                        {
+                            writer.WriteNull();
+                        }
+                        else
+                        {
+                            NpgsqlDateTime cdate = Convert.ToDateTime(entry.Closed_date);
+                            writer.Write(cdate);
+                        }
+                        writer.Write(entry.Agency);
+                        writer.Write(entry.Agency_name);
+                        writer.Write(entry.Complaint_type);
+                        writer.Write(entry.Descriptor);
+                        writer.Write(entry.Location_type);
+                        writer.Write(entry.Incident_zip);
+                        writer.Write(entry.Incident_address);
+                        writer.Write(entry.Street_name);
+                        writer.Write(entry.Cross_street_1);
+                        writer.Write(entry.Cross_street_2);
+                        writer.Write(entry.Intersection_street_1);
+                        writer.Write(entry.Intersection_street_2);
+                        writer.Write(entry.Address_type);
+                        writer.Write(entry.City);
+                        writer.Write(entry.Landmark);
+                        writer.Write(entry.Facility_type);
+                        writer.Write(entry.Status);
+
+                        
+                        if(entry.Due_date == null)
+                        {
+                            writer.WriteNull();
+                        }
+                        else
+                        {
+                            NpgsqlDateTime dDate = Convert.ToDateTime(entry.Due_date);
+                            writer.Write(dDate);
+                        }
+                        
+                        writer.Write(entry.Resolution_description);
+
+                        
+                        if (entry.Resolution_action_updated_date == null)
+                        {
+                            writer.WriteNull();
+                        }
+                        else
+                        {
+                            NpgsqlDateTime rDate = Convert.ToDateTime(entry.Resolution_action_updated_date);
+                            writer.Write(rDate);
+                        }
+                        
+                        writer.Write(entry.Community_board);
+                        writer.Write(entry.Bbl);
+                        writer.Write(entry.Borough);
+                        writer.Write(entry.X_coordinate_state_plane);
+                        writer.Write(entry.Y_coordinate_state_plane);
+                        writer.Write(entry.Open_data_channel_type);
+                        writer.Write(entry.Park_facility_name);
+                        writer.Write(entry.Park_borough);
+                        writer.Write(entry.Vehicle_type);
+                        writer.Write(entry.Taxi_company_borough);
+                        writer.Write(entry.Taxi_pick_up_location);
+                        writer.Write(entry.Bridge_highway_name);
+                        writer.Write(entry.Bridge_highway_direction);
+                        writer.Write(entry.Road_ramp);
+                        writer.Write(entry.Bridge_highway_segment);
+                        writer.Write(entry.Latitude);
+                        writer.Write(entry.Longitude);
+                        writer.Write(entry.Location_city);
+                       // writer.Write(entry.Location, NpgsqlDbType.Jsonb);
+                        writer.Write(entry.Location_zip);
+                        writer.Write(entry.Location_state);
+                    }
+                    writer.Complete();
+                }
+                Console.WriteLine("Success?");
+                conn.Close();
+                //NpgsqlCommand update = new NpgsqlCommand("UPDATE checktime SET curr_up_date=" + DateTime.Now, conn);
+                //update.ExecuteNonQuery();
             }
         }
 
@@ -113,21 +242,25 @@ namespace PgsqlDriver
         /// Checks the date to see if we need to make a new API call for today
         /// </summary>
         /// <param name="conn">recieves the connection to our database as a parameter</param>
-        public void CheckDate(NpgsqlConnection conn)
+        public void CheckDate(String connString)
         {
-
-            this.CheckConnection(conn);
-            using (NpgsqlCommand checkDate = new NpgsqlCommand("SELECT * FROM check_time", conn))
-            using (NpgsqlDataReader reader = checkDate.ExecuteReader())
+            using (var conn = new NpgsqlConnection(connString))
             {
-                try
+                conn.Open();
+                this.CheckConnection(conn);
+                using (NpgsqlCommand checkDate = new NpgsqlCommand("SELECT * FROM checktime", conn))
+                using (NpgsqlDataReader reader = checkDate.ExecuteReader())
                 {
-                    while (reader.Read())
+                    try
                     {
-                        Console.WriteLine(reader.GetString(0));
-                        reader.Close();
+                        while (reader.Read())
+                        {
+                            Console.WriteLine(reader.GetDate(0));
+                        }
                     }
-                } catch(Exception a) { Console.WriteLine(a); }
+                    catch (Exception a) { Console.WriteLine(a); }
+                }
+                conn.Close();
             }
         }
 
