@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Json311;
-using Npgsql;
+using NetTopologySuite.Geometries;
 using Newtonsoft.Json.Linq;
+using Npgsql;
 using NpgsqlTypes;
 
 namespace PgsqlDriver
@@ -138,7 +138,7 @@ namespace PgsqlDriver
                 /// write a null if the value is null
                 /// if not we cast the nullable datetime to datetime and then write that
                 /// </remarks>
-                using (var writer = conn.BeginBinaryImport("COPY test FROM STDIN (FORMAT BINARY)"))
+                using (var writer = conn.BeginBinaryImport("COPY calls FROM STDIN (FORMAT BINARY)"))
                 {
                     foreach (Json311.Json311 entry in dataset)
                     {
@@ -225,7 +225,20 @@ namespace PgsqlDriver
                         writer.Write(entry.Latitude);
                         writer.Write(entry.Longitude);
                         writer.Write(entry.Location_city);
-                       // writer.Write(entry.Location, NpgsqlDbType.Jsonb);
+
+
+                        if (entry.Location == null)
+                        {
+                            writer.WriteNull();
+                        }
+                        else
+                        {
+                            var dat = entry.Location.SelectToken("coordinates");
+                            double x = (double)dat[0];
+                            double y = (double)dat[1];
+                            Point nPoint = new Point(x, y);
+                            Console.WriteLine(nPoint);
+                        }
                         writer.Write(entry.Location_zip);
                         writer.Write(entry.Location_state);
                     }
