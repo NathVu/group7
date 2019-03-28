@@ -236,8 +236,8 @@ namespace PgsqlDriver
                             var dat = entry.Location.SelectToken("coordinates");
                             double x = (double)dat[0];
                             double y = (double)dat[1];
-                            Point nPoint = new Point(x, y);
-                            Console.WriteLine(nPoint);
+                            NpgsqlPoint nPoint = new NpgsqlPoint(x, y);
+                            writer.Write(nPoint);
                         }
                         writer.Write(entry.Location_zip);
                         writer.Write(entry.Location_state);
