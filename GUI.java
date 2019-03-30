@@ -15,16 +15,15 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn.CellDataFeatures;
+
 public class GUI extends Application{
 
     private TableView table = new TableView();
 
     public void start(Stage primaryStage) {
-    	
-    	Text title = new Text("311 Calls Manager");
-    	title.setId("title");
+
+        Text title = new Text("311 Calls Manager");
+        title.setId("title");
         Text te1 = new Text("From(HH:MM):");
         Text te2 = new Text("To(HH:MM):");
         Text te3 = new Text("ID:");
@@ -45,8 +44,9 @@ public class GUI extends Application{
 
             }
         });
-        
+
         Button btn2 = new Button("Reset");
+        btn2.setId("Reset");
         btn2.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
 
@@ -57,7 +57,7 @@ public class GUI extends Application{
 
         TableColumn idCol = new TableColumn("ID");
         idCol.setMinWidth(100);
-     
+
         TableColumn dateCol = new TableColumn("Open Date and Time");
         dateCol.setMinWidth(150);
 
@@ -95,16 +95,16 @@ public class GUI extends Application{
         root.getChildren().addAll(new HBox(),title,top1,top2);
         root.setSpacing(10);
         root.setAlignment(Pos.TOP_CENTER);
-        
+
         ObservableList<ObservableList> csvData = FXCollections.observableArrayList();
-        
+
         Scene scene = new Scene(root,1200,700);
         scene.getStylesheets().add("GUI_CSS_Format.css");
-        
+
         primaryStage.setTitle("311 Calls");
         primaryStage.setScene(scene);
         primaryStage.show();
-        
+
     }
     public static void addTextLimiter(final TextField tf, final int maxLength) {
         tf.textProperty().addListener(new ChangeListener<String>() {
