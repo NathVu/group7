@@ -1,6 +1,7 @@
 .root {
-    -fx-background-color: aliceblue;
+    -fx-background-color: linear-gradient(lightsteelblue, aliceblue, lightgray, aliceblue, lightgray, aliceblue, lightgray, lightsteelblue);
     -fx-font-family: "Courier New";
+    -fx-padding: 50;
 }
 
 #title {
@@ -31,10 +32,19 @@
     -fx-background-radius: 20;
     -fx-border-style: none;
     -fx-font-size: large;
+    -fx-effect: dropshadow(one-pass-box, black, 4, 1, 0, 0);
 }
 
 .button:hover {
     -fx-background-color: linear-gradient(lightgray, lightsteelblue);
+}
+
+#Reset {
+    -fx-background-color: mistyrose;
+}
+
+#Reset:hover {
+    -fx-background-color: linear-gradient(lightgray, mistyrose);
 }
 
 .table-view {
