@@ -41,7 +41,18 @@ public class GUI extends Application{
         Button btn1 = new Button("Search");
         btn1.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-
+            	String date = null;
+            	String startTime = null;
+            	String endTime = null;
+            	String id = null;
+            	if (!tf1.getText().equals(""))
+            		date = tf1.getText();
+            	if (!tf2.getText().equals(""))
+            		startTime = tf2.getText();
+            	if (!tf3.getText().equals(""))
+            		endTime = tf3.getText();
+            	if (!tf4.getText().equals(""))
+            		id = tf4.getText();
             }
         });
 
@@ -95,8 +106,6 @@ public class GUI extends Application{
         root.getChildren().addAll(new HBox(),title,top1,top2);
         root.setSpacing(10);
         root.setAlignment(Pos.TOP_CENTER);
-
-        ObservableList<ObservableList> csvData = FXCollections.observableArrayList();
 
         Scene scene = new Scene(root,1200,700);
         scene.getStylesheets().add("GUI_CSS_Format.css");

@@ -28,7 +28,6 @@
 .button {
     -fx-background-color: lightsteelblue;
     -fx-text-fill: black;
-    -fx-font-weight: bold;
     -fx-background-radius: 20;
     -fx-border-style: none;
     -fx-font-size: large;
@@ -39,12 +38,20 @@
     -fx-background-color: linear-gradient(lightgray, lightsteelblue);
 }
 
+.button:pressed {
+	-fx-background-color: white;
+}
+
 #Reset {
     -fx-background-color: mistyrose;
 }
 
 #Reset:hover {
     -fx-background-color: linear-gradient(lightgray, mistyrose);
+}
+
+#Reset:pressed{
+	-fx-background-color: white;
 }
 
 .table-view {
