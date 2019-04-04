@@ -12,15 +12,15 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-
+            SqlConnect dBConnect = new SqlConnect();
+            String connString = dBConnect.Connect();
+            Console.ReadKey();
+            dBConnect.CheckDate(connString); 
             DataFormat test = new DataFormat();
             Dictionary<string, object>[] rarr = test.getData();
             List<Json311.Json311> forDB = new List<Json311.Json311>();
             forDB = test.parseData(rarr);
-            SqlConnect testConnect = new SqlConnect();
-            String connString = testConnect.Connect();
-            testConnect.CheckDate(connString);
-            testConnect.Import(forDB, connString);
+            dBConnect.Import(forDB, connString);
             Console.ReadKey();
 
         }
@@ -82,7 +82,6 @@ namespace ConsoleApp1
             /// </remarks>
             Dictionary<string, object>[] results_arr = results.ToArray();
             Dictionary<string, object> val = results_arr[0];
-            Console.WriteLine(val.Values.Count());
             return results_arr;
         }
     }
@@ -227,7 +226,7 @@ namespace ConsoleApp1
         /// Internal Test to make sure the query is returning data and not an empty set
         /// </summary>
         /// <param name="testDB"> The database we want to test</param>
-        /// <param name="SizeOfList"> An out paramted - returns the number of data items in the database</param>
+        /// <param name="SizeOfList"> An out parameter - returns the number of data items in the database</param>
         public void TestIEnum(ref IEnumerable<Dictionary<string, object>> testDB, out int SizeOfList)
         {
             SizeOfList = testDB.Count();

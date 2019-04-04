@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Json311;
 using NetTopologySuite.Geometries;
-using Newtonsoft.Json.Linq;
+using System.Net.Sockets;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -22,13 +22,15 @@ namespace PgsqlDriver
         /// </remarks>
         
         /// <summary>
-        /// Establishes a connection between the program and our database (which will hopefully be hosted on azure 
+        /// Establishes a connection between the program and our database (which will hopefully be hosted on Google Cloud Compute
+        /// Also check the username/password pair and prompts the user to re-enter if they are incorrect  
         /// </summary>
         public String Connect()
         {
             String user = Authenticate(out String pass);
+            pass.Replace(" ", ""); //remove accidental whitespace
             Console.Write("Testing Connection: ");
-            String connString = "Host=localhost;Username=" + user + ";Password=" + pass + ";Database=group7";
+            String connString = "Host=35.193.33.89;Username=" + user + ";Password=" + pass + ";Database=postgres";
             try
             {
                 using (var conn = new NpgsqlConnection(connString))
@@ -38,9 +40,9 @@ namespace PgsqlDriver
                     conn.Close();
                     return connString;
                 }
-            }    catch(Npgsql.PostgresException)
+            }    catch(Npgsql.PostgresException a)
                  {
-                    Console.WriteLine("Your username and password do not match, try again");
+                    Console.WriteLine("Your username and password do not match, try again " + a.GetType());
                     this.Connect();
                 }
 
@@ -129,10 +131,35 @@ namespace PgsqlDriver
         {
             using (var conn = new NpgsqlConnection(connString))
             {
+
+                /// <remarks>
+                /// Make Sure data is not duplicated
+                /// </remarks>
                 conn.Open();
                 this.CheckConnection(conn);
                 conn.TypeMapper.UseJsonNet();
+                NpgsqlDateTime last_date = new NpgsqlDateTime();
 
+                /// <remarks> 
+                /// Get the DateStamp frmo our checktime table
+                /// We do this in order to check the stored datestamp so as not to import duplicate DATA
+                /// We cannot read and write over the same connection so we need to retrieve the dateTime so we can check it against the timestamp
+                /// of the entries later
+                /// </remarks>
+                using (NpgsqlCommand checkDate = new NpgsqlCommand("SELECT * FROM checktime", conn))
+                using (NpgsqlDataReader reader = checkDate.ExecuteReader())
+                {
+                    try
+                    {
+                        while (reader.Read())
+                        {
+                            last_date = reader.GetTimeStamp(0);
+                            reader.Close();
+                        }
+                    }
+                    catch (Exception a) { Console.WriteLine(a); }
+                }
+                int oldC = 0, newC = 0;
                 /// <remarks>
                 /// postgres does not support nullable datetimes so we check the DateTime fields and
                 /// write a null if the value is null
@@ -142,10 +169,22 @@ namespace PgsqlDriver
                 {
                     foreach (Json311.Json311 entry in dataset)
                     {
+                      
+                        /// <remarks> 
+                        /// Check the retrieved dateTime against the entries dateTime
+                        /// </remarks>
+                        NpgsqlDateTime entryDate = Convert.ToDateTime(entry.Created_date);
+                        if (entryDate < last_date)
+                        {
+                           oldC++;
+                           continue;
+                       }
+
+                         
                         writer.StartRow();
                         writer.Write(entry.Unique_key);
 
-                        if(entry.Created_date==null)
+                        if (entry.Created_date == null)
                         {
                             writer.WriteNull();
                         }
@@ -183,8 +222,8 @@ namespace PgsqlDriver
                         writer.Write(entry.Facility_type);
                         writer.Write(entry.Status);
 
-                        
-                        if(entry.Due_date == null)
+
+                        if (entry.Due_date == null)
                         {
                             writer.WriteNull();
                         }
@@ -193,10 +232,10 @@ namespace PgsqlDriver
                             NpgsqlDateTime dDate = Convert.ToDateTime(entry.Due_date);
                             writer.Write(dDate);
                         }
-                        
+
                         writer.Write(entry.Resolution_description);
 
-                        
+
                         if (entry.Resolution_action_updated_date == null)
                         {
                             writer.WriteNull();
@@ -206,7 +245,7 @@ namespace PgsqlDriver
                             NpgsqlDateTime rDate = Convert.ToDateTime(entry.Resolution_action_updated_date);
                             writer.Write(rDate);
                         }
-                        
+
                         writer.Write(entry.Community_board);
                         writer.Write(entry.Bbl);
                         writer.Write(entry.Borough);
@@ -239,15 +278,36 @@ namespace PgsqlDriver
                             NpgsqlPoint nPoint = new NpgsqlPoint(x, y);
                             writer.Write(nPoint);
                         }
+
                         writer.Write(entry.Location_zip);
                         writer.Write(entry.Location_state);
+
+                        newC++;
                     }
                     writer.Complete();
                 }
-                Console.WriteLine("Success?");
+                Console.WriteLine("New Records:" + newC + " Old Records: " + oldC);
+                NpgsqlDateTime last_up_date = Convert.ToDateTime(DateTime.Now);
+                Console.WriteLine(last_up_date);
+
+                /// <remarks> 
+                /// Update the stored Date in the checktime table
+                /// </remarks>
+                NpgsqlCommand dropCheck = new NpgsqlCommand("DROP TABLE checktime", conn);
+                dropCheck.ExecuteNonQuery();
+                NpgsqlCommand newCheck = new NpgsqlCommand("CREATE TABLE checktime (curr_up_date timestamp)", conn);
+                newCheck.ExecuteNonQuery();
+                using (var writer = conn.BeginBinaryImport("COPY checktime FROM STDIN (FORMAT BINARY)"))
+                {
+                    writer.StartRow();
+                    writer.Write(last_up_date);
+                    writer.Complete();
+                }
+
+                /// <remarks> 
+                /// Closes the connection when we are finished with it
+                /// </remarks>
                 conn.Close();
-                //NpgsqlCommand update = new NpgsqlCommand("UPDATE checktime SET curr_up_date=" + DateTime.Now, conn);
-                //update.ExecuteNonQuery();
             }
         }
 
@@ -268,7 +328,7 @@ namespace PgsqlDriver
                     {
                         while (reader.Read())
                         {
-                            Console.WriteLine(reader.GetDate(0));
+                            Console.WriteLine(reader.GetTimeStamp(0));
                         }
                     }
                     catch (Exception a) { Console.WriteLine(a); }
@@ -285,59 +345,98 @@ namespace PgsqlDriver
         /// This code will remain in case we need to create a new database 
         /// </summary>
         /// <returns>Returns the SQL command to create a table</returns>
-        public NpgsqlCommand TableNew()
+        public void Validate(String connString)
         {
-            NpgsqlCommand checkTable = new NpgsqlCommand(
-                    "CREATE TABLE IF NOT EXISTS calls311 (" +
-                    "unique_key varchar," +
-                    "created_date date," +
-                    "closed_date date," +
-                    "agency varchar," +
-                    "agency_name varchar, " +
-                    "complaint_type varchar," +
-                    "descriptor varchar," +
-                    "location_type varchar," +
-                    "incident_zip varchar," +
-                    "incident_address varchar," +
-                    "street_name varchar," +
-                    "cross_street_1 varchar," +
-                    "cross_street_2 varchar," +
-                    "intersection_street_1 varchar," +
-                    "intersection_street_2 varchar," +
-                    "address_type varchar, " +
-                    "city varchar, " +
-                    "landmark varchar," +
-                    "facility_type varchar," +
-                    "status varchar," +
-                    "due_date date," +
-                    "resolution_description varchar," +
-                    "resolution_action_updated_date date," +
-                    "community_board varchar," +
-                    "bbl varchar, " +
-                    "borough varchar, " +
-                    "x_coordinate_state_plane varchar, " +
-                    "y_coordinate_state_plane varchar," +
-                    "open_data_channel_type varchar," +
-                    "park_facility_name varchar," +
-                    "park_borough varchar," +
-                    "vehicle_type varchar," +
-                    "taxi_company_borough varchar," +
-                    "taxi_pick_up_location varchar, " +
-                    "bridge_highway_name varchar," +
-                    "bridge_highway_direction varchar, " +
-                    "road_ramp varchar," +
-                    "bridge_highway_segment varchar," +
-                    "latitude varchar, " +
-                    "longitude varchar," +
-                    "location_city varchar," +
-                    //"location point," +
-                    "location_zip varchar, " +
-                    "location_state varchar);"
-                );
+            using (var conn = new NpgsqlConnection(connString))
+            {
 
-            return checkTable;
+                /// <remarks>
+                /// Make Sure data is not duplicated
+                /// </remarks>
+                conn.Open();
+                this.CheckConnection(conn);
+                NpgsqlCommand dropCheck = new NpgsqlCommand("DROP TABLE IF EXISTS checktime", conn);
+                dropCheck.ExecuteNonQuery();
+                NpgsqlCommand newCheck = new NpgsqlCommand("CREATE TABLE checktime (curr_up_date timestamp)", conn);
+                newCheck.ExecuteNonQuery();
+
+                NpgsqlCommand drop = new NpgsqlCommand("DROP TABLE IF EXISTS calls", conn);
+                drop.ExecuteNonQuery();
+                NpgsqlCommand checkTable = new NpgsqlCommand(
+                        "CREATE TABLE IF NOT EXISTS calls (" +
+                        "unique_key varchar," +
+                        "created_date timestamp," +
+                        "closed_date timestamp," +
+                        "agency varchar," +
+                        "agency_name varchar, " +
+                        "complaint_type varchar," +
+                        "descriptor varchar," +
+                        "location_type varchar," +
+                        "incident_zip varchar," +
+                        "incident_address varchar," +
+                        "street_name varchar," +
+                        "cross_street_1 varchar," +
+                        "cross_street_2 varchar," +
+                        "intersection_street_1 varchar," +
+                        "intersection_street_2 varchar," +
+                        "address_type varchar, " +
+                        "city varchar, " +
+                        "landmark varchar," +
+                        "facility_type varchar," +
+                        "status varchar," +
+                        "due_date timestamp," +
+                        "resolution_description varchar," +
+                        "resolution_action_updated_date timestamp," +
+                        "community_board varchar," +
+                        "bbl varchar, " +
+                        "borough varchar, " +
+                        "x_coordinate_state_plane varchar, " +
+                        "y_coordinate_state_plane varchar," +
+                        "open_data_channel_type varchar," +
+                        "park_facility_name varchar," +
+                        "park_borough varchar," +
+                        "vehicle_type varchar," +
+                        "taxi_company_borough varchar," +
+                        "taxi_pick_up_location varchar, " +
+                        "bridge_highway_name varchar," +
+                        "bridge_highway_direction varchar, " +
+                        "road_ramp varchar," +
+                        "bridge_highway_segment varchar," +
+                        "latitude varchar, " +
+                        "longitude varchar," +
+                        "location_city varchar," +
+                        "location point," +
+                        "location_zip varchar, " +
+                        "location_state varchar);", conn
+                    );
+                checkTable.ExecuteNonQuery();
+
+              
+            }
         }
+
        
+    }
+
+
+    class CloudConnect
+    {
+        /// <summary>
+        /// potential code for connecting to the Cloud Computer Proxy Service via TCP ports
+        /// Code used here is sample code provided by microsoft in their documentation found here: 
+        /// https://docs.microsoft.com/en-us/dotnet/api/system.net.sockets.tcpclient?view=netframework-4.7.2
+        /// </summary>
+        /// <param name="Server">tje server hosting our dn</param>
+        /// <param name="message">the message we want to send</param>
+        static void Connect(String Server, String message)
+        {
+            Int32 port = 5432;
+            TcpClient client = new TcpClient(Server, port);
+            Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
+            NetworkStream stream = client.GetStream();
+
+            stream.Write(data, 0, data.Length);
+        }
     }
         
 
