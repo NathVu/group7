@@ -22,7 +22,7 @@ namespace PgsqlDriver
         /// </remarks>
         
         /// <summary>
-        /// Establishes a connection between the program and our database (which will hopefully be hosted on Google Cloud Compute
+        /// Establishes a connection between the program and our database (which will hopefully be hosted on Google Cloud Compute - completed)
         /// Also check the username/password pair and prompts the user to re-enter if they are incorrect  
         /// </summary>
         public String Connect()
@@ -342,9 +342,11 @@ namespace PgsqlDriver
 
         /// <summary>
         /// This is just to check the types, the actual table has already been created
-        /// This code will remain in case we need to create a new database 
+        /// This code will remain in case we need to create a new database t
+        /// 
+        /// used to return, now is just used in case we need to create a new table 
         /// </summary>
-        /// <returns>Returns the SQL command to create a table</returns>
+        /// <param name="connString">the connection string to connect to our DB</param>
         public void Validate(String connString)
         {
             using (var conn = new NpgsqlConnection(connString))
@@ -415,28 +417,7 @@ namespace PgsqlDriver
             }
         }
 
-       
-    }
-
-
-    class CloudConnect
-    {
-        /// <summary>
-        /// potential code for connecting to the Cloud Computer Proxy Service via TCP ports
-        /// Code used here is sample code provided by microsoft in their documentation found here: 
-        /// https://docs.microsoft.com/en-us/dotnet/api/system.net.sockets.tcpclient?view=netframework-4.7.2
-        /// </summary>
-        /// <param name="Server">tje server hosting our dn</param>
-        /// <param name="message">the message we want to send</param>
-        static void Connect(String Server, String message)
-        {
-            Int32 port = 5432;
-            TcpClient client = new TcpClient(Server, port);
-            Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
-            NetworkStream stream = client.GetStream();
-
-            stream.Write(data, 0, data.Length);
-        }
+     
     }
         
 

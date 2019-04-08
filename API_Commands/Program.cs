@@ -8,8 +8,20 @@ using Npgsql;
 
 namespace ConsoleApp1
 {
+    /// <summary>
+    /// our driver class, contains our main and calls of all the functions we need in order to get the data 
+    /// from the 311 database into our psql db 
+    /// 
+    /// todo - write a ping function to test internet connection
+    /// </summary>
     class Group7
     {
+        /// <summary>
+        /// our main method 
+        /// </summary>
+        /// <param name="args">we should never really need arguments passed to main, however we may later decide to 
+        /// modify the program to accept the db name, ip address, username and password as command line arguments 
+        /// </param>
         static void Main(string[] args)
         {
             SqlConnect dBConnect = new SqlConnect();
@@ -38,10 +50,12 @@ namespace ConsoleApp1
     {
 
         /// <summary>
-        /// 
+        /// used to parse our data into our user created type instead of the dictionary that the API 
+        /// call returns 
         /// </summary>
         /// <param name="dataset"> recieves out dataset, formatted in getData into an array of Dictionary objects</param>
-        /// <returns>The data parsed into our user created class</returns>
+        /// <returns>The data parsed into our user created class
+        /// </returns>
         public List<Json311.Json311> parseData(Dictionary<string, object>[] dataset)
         {
             List<Json311.Json311> dataList = new List<Json311.Json311>();
