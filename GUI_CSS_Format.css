@@ -1,15 +1,16 @@
 .root {
     -fx-background-color: linear-gradient(lightsteelblue, aliceblue, lightgray, aliceblue, lightgray, aliceblue, lightgray, lightsteelblue);
     -fx-font-family: "Courier New";
-    -fx-padding: 50;
+    -fx-padding: 52;
 }
 
 #title {
     -fx-font-weight: normal;
-    -fx-font-size: 50;
-    -fx-effect: dropshadow(three-pass-box, gray, 10, 0.5, 0, 0);
-
+    -fx-font-size: 70;
+    -fx-underline: true;
+    -fx-effect: dropshadow(three-pass-box, gray, 15, 0.5, 0, 0);
 }
+
 .label {
     -fx-background-color: lightsteelblue;
     -fx-background-radius: 0;
@@ -17,12 +18,16 @@
     -fx-border-style: solid;
     -fx-border-color: ghostwhite;
     -fx-border-width: 1px;
-    -fx-font-weight: normal;
+    -fx-font-weight: bold;
     -fx-font-size: medium;
 }
 
 .label:hover {
     -fx-background-color: linear-gradient(lightgray, lightsteelblue);
+}
+
+.label:pressed {
+    -fx-background-color: lightgray;
 }
 
 .button {
@@ -31,7 +36,8 @@
     -fx-background-radius: 20;
     -fx-border-style: none;
     -fx-font-size: large;
-    -fx-effect: dropshadow(one-pass-box, black, 4, 1, 0, 0);
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(one-pass-box, black, 14, 0, 6, 0);
 }
 
 .button:hover {
@@ -39,7 +45,7 @@
 }
 
 .button:pressed {
-	-fx-background-color: white;
+    -fx-background-color: aliceblue, ghostwhite, aliceblue;
 }
 
 #Reset {
@@ -50,13 +56,13 @@
     -fx-background-color: linear-gradient(lightgray, mistyrose);
 }
 
-#Reset:pressed{
-	-fx-background-color: white;
+#Reset:pressed {
+    -fx-background-color: aliceblue, ghostwhite, aliceblue;
 }
 
 .table-view {
     -fx-background-color: ghostwhite;
     -fx-border-style: solid;
     -fx-border-width: 3px;
-    -fx-effect: dropshadow(three-pass-box, gray, 18, 0.5, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, gray, 18, 0.5, 6, 0);
 }
