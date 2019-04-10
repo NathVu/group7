@@ -16,13 +16,13 @@ import javafx.scene.control.TableView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class GUI extends Application{
+public class GUI extends Application {
 
     private TableView table = new TableView();
 
     public void start(Stage primaryStage) {
 
-        Text title = new Text("311 Calls Manager");
+        Text title = new Text("☏ 311 CALLS MANAGER ☏");
         title.setId("title");
         Text te1 = new Text("From(HH:MM):");
         Text te2 = new Text("To(HH:MM):");
@@ -41,18 +41,18 @@ public class GUI extends Application{
         Button btn1 = new Button("Search");
         btn1.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-            	String date = null;
-            	String startTime = null;
-            	String endTime = null;
-            	String id = null;
-            	if (!tf1.getText().equals(""))
-            		date = tf1.getText();
-            	if (!tf2.getText().equals(""))
-            		startTime = tf2.getText();
-            	if (!tf3.getText().equals(""))
-            		endTime = tf3.getText();
-            	if (!tf4.getText().equals(""))
-            		id = tf4.getText();
+                String date = null;
+                String startTime = null;
+                String endTime = null;
+                String id = null;
+                if (!tf1.getText().equals(""))
+                    date = tf1.getText();
+                if (!tf2.getText().equals(""))
+                    startTime = tf2.getText();
+                if (!tf3.getText().equals(""))
+                    endTime = tf3.getText();
+                if (!tf4.getText().equals(""))
+                    id = tf4.getText();
             }
         });
 
@@ -104,10 +104,10 @@ public class GUI extends Application{
 
         VBox root = new VBox();
         root.getChildren().addAll(new HBox(),title,top1,top2);
-        root.setSpacing(10);
+        root.setSpacing(40);
         root.setAlignment(Pos.TOP_CENTER);
 
-        Scene scene = new Scene(root,1200,700);
+        Scene scene = new Scene(root,1300,800);
         scene.getStylesheets().add("GUI_CSS_Format.css");
 
         primaryStage.setTitle("311 Calls");
