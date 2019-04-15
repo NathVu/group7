@@ -15,6 +15,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import java.io.IOException;
+import java.sql.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class GUI extends Application {
 
@@ -68,30 +71,40 @@ public class GUI extends Application {
 
         TableColumn idCol = new TableColumn("ID");
         idCol.setMinWidth(100);
+        idCol.setCellFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn dateCol = new TableColumn("Open Date and Time");
-        dateCol.setMinWidth(150);
+        TableColumn openCol = new TableColumn("Open Date and Time");
+        openCol.setMinWidth(150);
+        openCol.setCellFactory(new PropertyValueFactory<>("open"));
 
         TableColumn closeCol = new TableColumn("Closed Date and Time");
         closeCol.setMinWidth(175);
+        closeCol.setCellFactory(new PropertyValueFactory<>("close"));
 
         TableColumn typeCol = new TableColumn("Type of Call");
         typeCol.setMinWidth(175);
+        typeCol.setCellFactory(new PropertyValueFactory<>("type"));
 
         TableColumn addCol = new TableColumn("Address");
+        addCol.setCellFactory(new PropertyValueFactory<>("add"));
         TableColumn streetCol = new TableColumn("Street");
         streetCol.setMinWidth(200);
+        streetCol.setCellFactory(new PropertyValueFactory<>("street"));
+        
         TableColumn zipCol = new TableColumn("Zip Code");
         zipCol.setMinWidth(100);
         addCol.getColumns().addAll(streetCol,zipCol);
+        zipCol.setCellFactory(new PropertyValueFactory<>("zip"));
 
         TableColumn depCol = new TableColumn("Department");
         depCol.setMinWidth(100);
+        depCol.setCellFactory(new PropertyValueFactory<>("dep"));
 
         TableColumn statCol = new TableColumn("Status");
         statCol.setMinWidth(100);
+        statCol.setCellFactory(new PropertyValueFactory<>("stat"));
 
-        table.getColumns().addAll(idCol,dateCol,closeCol,depCol,typeCol,addCol,statCol);
+        table.getColumns().addAll(idCol,openCol,closeCol,depCol,typeCol,addCol,statCol);
 
         HBox top1 = new HBox(5);
         top1.getChildren().addAll(te4,tf4,te1,tf1,te2,tf2,te3,tf3,btn1,btn2);
@@ -126,7 +139,28 @@ public class GUI extends Application {
             }
         });
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLNonTransientConnectionException 
+    ,IOException, SQLException {
+	    	/*String databaseName = "postgres";
+	    	
+	    Class.forName("org.postgresql.Driver").newInstance();
+	
+	    	String IP_of_instance = "35.193.33.89";
+	    	String username = "ivan";
+	    	String password = "NT0408";
+	    	
+	    	String url = "jdbc:postgresql://[35.193.33.89]/group7-311call";
+	
+	    	Connection connection = DriverManager.getConnection(url, username, password);
+	    	
+	    	try (Statement statement = connection.createStatement()) {
+	    	  ResultSet resultSet = statement.executeQuery("SHOW TABLES");
+	    	  while (resultSet.next()) 
+	    	    System.out.println(resultSet.getString(1));
+	    	}
+	    	catch(Exception e){
+	    	  e.printStackTrace();
+	    	}*/
         launch(args);
     }
 }
