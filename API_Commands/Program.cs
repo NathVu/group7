@@ -5,6 +5,14 @@ using SODA;
 using Json311;
 using PgsqlDriver;
 using Npgsql;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ConsoleApp1
 {
@@ -16,6 +24,7 @@ namespace ConsoleApp1
     /// </summary>
     class Group7
     {
+
         /// <summary>
         /// our main method 
         /// </summary>
@@ -24,6 +33,11 @@ namespace ConsoleApp1
         /// </param>
         static void Main(string[] args)
         {
+            /// <remarks> 
+            /// for alternate web front-end (will not be included in github repo) 
+            /// </remarks>
+           // IWebHost WebHost = CreateWebHostBuilder(args).Build();
+
             SqlConnect dBConnect = new SqlConnect();
             String connString = dBConnect.Connect();
             Console.ReadKey();
@@ -37,6 +51,17 @@ namespace ConsoleApp1
 
         }
 
+        /// <summary>
+        /// for use in alternate front end, the code for that will not
+        /// be included in the github repo 
+        /// </summary>
+        /// <param name="args">arguments passed to initialize the webstie</param>
+        /// <returns>returns a builder to assemble the webhost</returns>
+        /*
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .UseStartup<FrontEnd.Startup>();
+        */
     }
 
 
@@ -192,8 +217,8 @@ namespace ConsoleApp1
             /// Since the data is only updated every day for the day before in part and fully for 
             /// 2 days before we get the dates for yesterday and the day before for filtering
             /// </remarks>
-            String day = (today.Day - 3).ToString();
-            String yday = (today.Day -2).ToString();
+            String day = (today.Day - 10).ToString();
+            String yday = (today.Day - 10).ToString();
 
             /// <remarks>
             ///The date field in the Query needs to be of type

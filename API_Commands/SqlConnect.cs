@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Json311;
 using NetTopologySuite.Geometries;
-using System.Net.Sockets;
+using System.Net.NetworkInformation;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -335,6 +335,25 @@ namespace PgsqlDriver
                 }
                 conn.Close();
             }
+        }
+
+        public bool CheckInternet(string ip)
+        {
+            Ping p1 = new Ping();
+            PingReply PR = p1.Send("192.168.2.18");
+            // check when the ping is not success
+            while (!PR.Status.ToString().Equals("Success"))
+            {
+                Console.WriteLine(PR.Status.ToString());
+                PR = p1.Send("192.168.2.18");
+            }
+            // check after the ping is n success
+            while (PR.Status.ToString().Equals("Success"))
+            {
+                Console.WriteLine(PR.Status.ToString());
+                PR = p1.Send("192.168.2.18");
+            }
+            return true; 
         }
 
 
