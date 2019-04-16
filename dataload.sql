@@ -4,6 +4,8 @@ DROP TABLE IF EXISTS resolvedrequests;
 DROP TABLE IF EXISTS unresolvedrequests;
 DROP TABLE IF EXISTS timeorder;
 DROP TABLE IF EXISTS geographiclocation;
+DROP TABLE IF EXISTS searchbycase;
+DROP TABLE IF EXISTS numberofcases;
 
 SET client_encoding = 'LATIN1';
 
@@ -74,7 +76,23 @@ CREATE TABLE timeorder AS
     FROM totalrequests
     ORDER BY created_date;
     
+-- sample search by timeorder query
+-- SELECT *
+-- FROM timeorder
+-- WHERE created_date BETWEEN '2019-03-11 15:38:00' AND '2019-03-11 16:00:00';
+    
 CREATE TABLE geographiclocation AS
    SELECT borough, unique_key, created_date, closed_date, complaint_type, agency_name, incident_address, incident_zip
     FROM totalrequests
     ORDER BY borough;
+    
+CREATE TABLE searchbycase AS
+    SELECT complaint_type, unique_key, created_date, closed_date, agency_name, incident_address, incident_zip, status
+    FROM totalrequests
+    ORDER BY complaint_type;
+    
+CREATE TABLE numberofcases AS
+    SELECT complaint_type, COUNT(*) AS num
+    FROM totalrequests
+    GROUP BY complaint_type
+    ORDER BY num DESC;
