@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Json311;
-using NetTopologySuite.Geometries;
 using System.Net.NetworkInformation;
 using Npgsql;
 using NpgsqlTypes;
@@ -123,6 +121,9 @@ namespace PgsqlDriver
         }
 
 
+        /// <remarks>
+        /// TODO: update checktime to the most recent data entry in the table and not the current time/date
+        /// </remarks>
         /// <summary>
         /// Our import command to import the data for the day into our pgsql database
         /// </summary>
@@ -139,6 +140,8 @@ namespace PgsqlDriver
                 this.CheckConnection(conn);
                 conn.TypeMapper.UseJsonNet();
                 NpgsqlDateTime last_date = new NpgsqlDateTime();
+                DateTime construct = new DateTime(0);
+                NpgsqlDateTime most_recent = new NpgsqlDateTime(construct);
 
                 /// <remarks> 
                 /// Get the DateStamp frmo our checktime table
@@ -176,8 +179,12 @@ namespace PgsqlDriver
                         NpgsqlDateTime entryDate = Convert.ToDateTime(entry.Created_date);
                         if (entryDate < last_date)
                         {
-                           oldC++;
-                           continue;
+                            if(most_recent < entryDate)
+                            {
+                                most_recent = entryDate;
+                            }
+                            oldC++;
+                            continue;
                        }
 
                          
@@ -300,7 +307,7 @@ namespace PgsqlDriver
                 using (var writer = conn.BeginBinaryImport("COPY checktime FROM STDIN (FORMAT BINARY)"))
                 {
                     writer.StartRow();
-                    writer.Write(last_up_date);
+                    writer.Write(most_recent);
                     writer.Complete();
                 }
 
@@ -337,21 +344,28 @@ namespace PgsqlDriver
             }
         }
 
-        public bool CheckInternet(string ip)
+        /// <summary>
+        /// Checks to see if the device has internet connection 
+        /// (it is also possible that the device was not whitelisted so it may not be able to connect
+        ///     I will try to see if it is possible to remotely whitelist but I doubt it)
+        ///  
+        /// </summary>
+        /// <returns>Returns the connection status</returns>
+        public bool CheckInternet()
         {
             Ping p1 = new Ping();
-            PingReply PR = p1.Send("192.168.2.18");
+            PingReply PR = p1.Send("35.193.33.89");
             // check when the ping is not success
             while (!PR.Status.ToString().Equals("Success"))
             {
                 Console.WriteLine(PR.Status.ToString());
-                PR = p1.Send("192.168.2.18");
+                PR = p1.Send("35.193.33.89");
             }
             // check after the ping is n success
             while (PR.Status.ToString().Equals("Success"))
             {
                 Console.WriteLine(PR.Status.ToString());
-                PR = p1.Send("192.168.2.18");
+                PR = p1.Send("35.193.33.89");
             }
             return true; 
         }
