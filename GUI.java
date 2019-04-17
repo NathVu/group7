@@ -25,7 +25,7 @@ public class GUI extends Application {
 
     public void start(Stage primaryStage) {
 
-        Text title = new Text("☏ 311 CALLS MANAGER ☏");
+        Text title = new Text("笘� 311 CALLS MANAGER 笘�");
         title.setId("title");
         Text te1 = new Text("From(HH:MM):");
         Text te2 = new Text("To(HH:MM):");
@@ -139,28 +139,27 @@ public class GUI extends Application {
             }
         });
     }
-    public static void main(String[] args) throws SQLNonTransientConnectionException 
-    ,IOException, SQLException {
-	    	/*String databaseName = "postgres";
+    public static void main(String[] args) throws Exception{
+	    /*String databaseName = "postgres";
 	    	
-	    Class.forName("org.postgresql.Driver").newInstance();
+	    Class.forName("org.postgresql.Driver");
 	
-	    	String IP_of_instance = "35.193.33.89";
-	    	String username = "ivan";
-	    	String password = "NT0408";
+	    String IP_of_instance = "35.193.33.89";
+	    String username = "ivan";
+	    String password = "NT0408";
 	    	
-	    	String url = "jdbc:postgresql://[35.193.33.89]/group7-311call";
+	    String url = "jdbc:postgresql://[35.193.33.89]/group7-311call";
 	
-	    	Connection connection = DriverManager.getConnection(url, username, password);
+	    Connection connection = DriverManager.getConnection(url, username, password);
 	    	
-	    	try (Statement statement = connection.createStatement()) {
-	    	  ResultSet resultSet = statement.executeQuery("SHOW TABLES");
-	    	  while (resultSet.next()) 
-	    	    System.out.println(resultSet.getString(1));
-	    	}
-	    	catch(Exception e){
-	    	  e.printStackTrace();
-	    	}*/
+	    try (Statement statement = connection.createStatement()) {
+	      	ResultSet resultSet = statement.executeQuery("SHOW TABLES");
+	      	while (resultSet.next()) 
+	      	System.out.println(resultSet.getString(1));
+	    }
+	    catch(Exception e){
+	    	e.printStackTrace();
+	    }*/
         launch(args);
     }
 }
