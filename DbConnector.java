@@ -1,4 +1,6 @@
 
+
+
 import java.sql.*;
 
 public class DbConnector 
@@ -18,80 +20,20 @@ public class DbConnector
       System.out.println();
      }
     } 
+     public String establishConnection()
+    {
+     String UserName;String Password;
+     String connection = "UserName, Password";
+     try{
+      using (var connectionsetting = new NpgsqlConnection(connectionString);
+      connectionsetting.Open();
+      connectionsetting.Close();
+      return connectionsetting;
+     }catch (Npgsql.PostgresException query)
+         this.Connection;
+    }
     
-               public String establishConnection()
-          {
-            String userName;
-            String connection = "username , password , databse-postgresql”;
-             try
-            {
-                using (var connectionsetting = new NpgsqlConnection(connectionString))
-                {
-                    connectionsetting.Open();
-                    connectionseeting.Close();
-                    return connectionString;
-                }
-            }    catch(Npgsql.PostgresException query)
-                 {
-                    Console.WriteLine("Username and password do not match, please enter valid username and password  "  + query.GetType());
-                    this.Connect();
-                }
-            return "Connection has been failed";
-                }
-    public String landmark() throws SQLException
-    {
-      String query = "select * totalrequest";
-     rs=st.executeQuery(query);
-     String landmark = rs.getString("landmark");
-     return landmark;
-    }  
-        public String facility_type() throws SQLException
-    {
-      String query = "select * totalrequest";
-     rs=st.executeQuery(query);
-     String facility= rs.getString("facility");
-     return facility;
-    }
-         public String status() throws SQLException
-    {
-      String query = "select * totalrequest";
-     rs=st.executeQuery(query);
-     String status= rs.getString("city");
-     return status;
-    }
-          public String due_date() throws SQLException
-    {
-      String query = "select * totalrequest";
-     rs=st.executeQuery(query);
-     String duedata= rs.getString("city");
-     return duedata;
-    }
-           public String borough() throws SQLException
-    {
-      String query = "select * totalrequest";
-     rs=st.executeQuery(query);
-     String borough= rs.getString("city");
-     return borough;
-    }
-     public String resolvedrequests() throws SQLException
-    {
-      String query = "select * totalrequest";
-     rs=st.executeQuery(query);
-     String resolvedrequests= rs.getString("city");
-     return resolvedrequests;
-    }
-     
-      public String geographiclocation() throws SQLException
-    {
-      String query = "select * totalrequest";
-     rs=st.executeQuery(query);
-     String location= rs.getString("city");
-     return location;
-    }  
-       
-
-   
-    public int uniquekey() throws SQLException
+     public int uniquekey() throws SQLException
     {
      String query = "select * totalrequest";
      rs=st.executeQuery(query);
@@ -197,4 +139,60 @@ public class DbConnector
      String city = rs.getString("city");
      return city;
     }
+       
+      public String landmark() throws SQLException
+    {
+      String query = "select * totalrequest";
+     rs=st.executeQuery(query);
+     String landmark = rs.getString("landmark");
+     return landmark;
+    }  
+        public String facility_type() throws SQLException
+    {
+      String query = "select * totalrequest";
+     rs=st.executeQuery(query);
+     String facility= rs.getString("facility");
+     return facility;
+    }
+         public String status() throws SQLException
+    {
+      String query = "select * totalrequest";
+     rs=st.executeQuery(query);
+     String status= rs.getString("city");
+     return status;
+    }
+          public String due_date() throws SQLException
+    {
+      String query = "select * totalrequest";
+     rs=st.executeQuery(query);
+     String duedata= rs.getString("city");
+     return duedata;
+    }
+           public String borough() throws SQLException
+    {
+      String query = "select * totalrequest";
+     rs=st.executeQuery(query);
+     String borough= rs.getString("city");
+     return borough;
+    }
+     public String resolvedrequests() throws SQLException
+    {
+      String query = "select * totalrequest";
+     rs=st.executeQuery(query);
+     String resolvedrequests= rs.getString("city");
+     return resolvedrequests;
+    }
+     
+      public String geographiclocation() throws SQLException
+    {
+      String query = "select * totalrequest";
+     rs=st.executeQuery(query);
+     String location= rs.getString("city");
+     return location;
+    }  
+      
+   
+      
+       
+       
 }
