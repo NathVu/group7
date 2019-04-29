@@ -5,14 +5,8 @@ using SODA;
 using Json311;
 using PgsqlDriver;
 using Npgsql;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
+
 
 namespace ConsoleApp1
 {

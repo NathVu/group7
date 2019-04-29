@@ -22,7 +22,7 @@ namespace PgsqlDriver
         /// <summary>
         /// Establishes a connection between the program and our database (which will hopefully be hosted on Google Cloud Compute - completed)
         /// Also check the username/password pair and prompts the user to re-enter if they are incorrect  
-        /// </summary>
+        /// </summary>  
         public String Connect()
         {
             String user = Authenticate(out String pass);
@@ -121,9 +121,6 @@ namespace PgsqlDriver
         }
 
 
-        /// <remarks>
-        /// TODO: update checktime to the most recent data entry in the table and not the current time/date
-        /// </remarks>
         /// <summary>
         /// Our import command to import the data for the day into our pgsql database
         /// </summary>
