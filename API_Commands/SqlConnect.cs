@@ -28,7 +28,17 @@ namespace PgsqlDriver
             String user = Authenticate(out String pass);
             pass.Replace(" ", ""); //remove accidental whitespace
             Console.Write("Testing Connection: ");
-            String connString = "Host=35.193.33.89;Username=" + user + ";Password=" + pass + ";Database=postgres";
+            //String connString = "Host=35.193.33.89;Username=" + user + ";Password=" + pass + ";Database=postgres";
+            /// <remarks>
+            /// we bind the proxy to port 5433 using the command 
+            /// cloud_sql_proxy -instances=<INSTANCE_CONNECTION_NAME>=tcp:5432 \
+            /// -credential_file =< PATH_TO_KEY_FILE > &
+            /// 
+            /// In my specific case that is:
+            /// cloud_sql_proxy -instances=windy-cedar-235801:us-central1:group7-311call=tcp:5433 \ -credential_file=windy-cedar-235801-480d574f674b.json &
+            ///  </remarks>
+            String connString = "Host=127.0.0.1;Port=5433;Username=" + user + ";Password=" + pass + ";Database=postgres";
+            
             try
             {
                 using (var conn = new NpgsqlConnection(connString))
@@ -55,7 +65,7 @@ namespace PgsqlDriver
         /// when we make this call the connection stays open
         /// </summary>
         /// <param name="conn">The connection we are testing</param>
-        public void CheckConnection(NpgsqlConnection conn)
+        private void CheckConnection(NpgsqlConnection conn)
         {
             if(conn.State == System.Data.ConnectionState.Open)
             {
