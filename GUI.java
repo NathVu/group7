@@ -17,6 +17,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.io.IOException;
 import java.sql.*;
+import java.util.Properties;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class GUI extends Application {
@@ -140,26 +141,23 @@ public class GUI extends Application {
         });
     }
     public static void main(String[] args) throws Exception{
-	    /*String databaseName = "postgres";
-	    	
-	    Class.forName("org.postgresql.Driver");
-	
-	    String IP_of_instance = "35.193.33.89";
-	    String username = "ivan";
-	    String password = "NT0408";
-	    	
-	    String url = "jdbc:postgresql://[35.193.33.89]/group7-311call";
-	
-	    Connection connection = DriverManager.getConnection(url, username, password);
-	    	
-	    try (Statement statement = connection.createStatement()) {
-	      	ResultSet resultSet = statement.executeQuery("SHOW TABLES");
-	      	while (resultSet.next()) 
-	      	System.out.println(resultSet.getString(1));
-	    }
-	    catch(Exception e){
-	    	e.printStackTrace();
-	    }*/
+    		try {
+		    /*String databaseName = "postgres";
+		    	
+		    Class.forName("org.postgresql.Driver");
+		
+		    String username = "ivan";
+		    String password = "NT0408";
+		    	
+		    String url = "jdbc:postgresql://35.193.33.89/group7";
+		
+		    Connection connection = DriverManager.getConnection(url, username, password);*/
+		    String url = "jdbc:postgresql://35.193.33.89/group7?user=ivan&password=NT0408&ssl=true";
+		    Connection conn = DriverManager.getConnection(url);
+		}
+    		catch(Exception e){
+    			System.out.println(e);
+    		}
         launch(args);
     }
 }
