@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SODA;
-using Json311;
+using JsonUserVariable;
 using PgsqlDriver;
 using Npgsql;
 using NUnit.Framework;
@@ -35,7 +35,7 @@ namespace ConsoleApp1
             dBConnect.CheckDate(connString); 
             DataFormat test = new DataFormat();
             Dictionary<string, object>[] rarr = test.getData();
-            List<Json311.Json311> forDB = new List<Json311.Json311>();
+            List<Json311> forDB = new List<Json311>();
             forDB = test.parseData(rarr);
             dBConnect.Import(forDB, connString);
             Console.ReadKey();
@@ -61,14 +61,14 @@ namespace ConsoleApp1
         /// <param name="dataset"> recieves out dataset, formatted in getData into an array of Dictionary objects</param>
         /// <returns>The data parsed into our user created class
         /// </returns>
-        public List<Json311.Json311> parseData(Dictionary<string, object>[] dataset)
+        public List<Json311> parseData(Dictionary<string, object>[] dataset)
         {
-            List<Json311.Json311> dataList = new List<Json311.Json311>();
+            List<Json311> dataList = new List<Json311>();
             DateTime date = DateTime.Today.Date.AddDays(-1);
             int countY = 0, countT = 0; 
             for (int i = 0; i < dataset.Length; i++)
             {
-                Json311.Json311 dItem = new Json311.Json311(dataset[i]);
+                Json311 dItem = new Json311(dataset[i]);
                if(dItem.Created_date < date)
                 {
                     dataList.Add(dItem);
@@ -197,8 +197,8 @@ namespace ConsoleApp1
             /// Since the data is only updated every day for the day before in part and fully for 
             /// 2 days before we get the dates for yesterday and the day before for filtering
             /// </remarks>
-            String day = (today.Day - 20).ToString();
-            String yday = (today.Day - 20).ToString();
+            String day = (today.Day - 2).ToString();
+            String yday = (today.Day - 3).ToString();
 
             /// <remarks>
             ///The date field in the Query needs to be of type

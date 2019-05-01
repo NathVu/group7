@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using Npgsql;
 using NpgsqlTypes;
+using JsonUserVariable;
 
 namespace PgsqlDriver
 {
@@ -23,9 +24,12 @@ namespace PgsqlDriver
         /// Establishes a connection between the program and our database (which will hopefully be hosted on Google Cloud Compute - completed)
         /// Also check the username/password pair and prompts the user to re-enter if they are incorrect  
         /// </summary>  
-        public String Connect()
+        public String Connect(String user = "", String pass = "", bool newCredentials = true)
         {
-            String user = Authenticate(out String pass);
+            if(newCredentials == true)
+            {
+                user = Authenticate(out pass);
+            }
             pass.Replace(" ", ""); //remove accidental whitespace
             Console.Write("Testing Connection: ");
             //String connString = "Host=35.193.33.89;Username=" + user + ";Password=" + pass + ";Database=postgres";
@@ -38,7 +42,7 @@ namespace PgsqlDriver
             /// cloud_sql_proxy -instances=windy-cedar-235801:us-central1:group7-311call=tcp:5433 \ -credential_file=windy-cedar-235801-480d574f674b.json &
             ///  </remarks>
             String connString = "Host=127.0.0.1;Port=5433;Username=" + user + ";Password=" + pass + ";Database=postgres";
-            
+
             try
             {
                 using (var conn = new NpgsqlConnection(connString))
@@ -132,10 +136,16 @@ namespace PgsqlDriver
 
 
         /// <summary>
-        /// Our import command to import the data for the day into our pgsql database
+        /// Our import command to import the data for the day into our pgsql database,
+        /// will be broken up into multiple functions for increased readability 
         /// </summary>
         /// <param name="dataset">Our current DataSet to load into our DB</param>
-        public void Import(List<Json311.Json311> dataset, String connString)
+        /// <param name="connString">The string to initialize the connection to the database</param>
+        /// <param name="tableName">The tableName, set to calls by default, allows for testing
+        ///     to a different table without adding fake data to the database, the testing database is 
+        ///     otherwise functionally identical to the calls database
+        /// </param>
+        public void Import(List<Json311> dataset, String connString, string tableName = "calls", Boolean updateTime = true)
         {
             using (var conn = new NpgsqlConnection(connString))
             {
@@ -174,10 +184,11 @@ namespace PgsqlDriver
                 /// postgres does not support nullable datetimes so we check the DateTime fields and
                 /// write a null if the value is null
                 /// if not we cast the nullable datetime to datetime and then write that
+                /// Using the tablename variable allows us to change the target table without changing all the code
                 /// </remarks>
-                using (var writer = conn.BeginBinaryImport("COPY calls FROM STDIN (FORMAT BINARY)"))
+                using (var writer = conn.BeginBinaryImport("COPY " + tableName + " FROM STDIN (FORMAT BINARY)"))
                 {
-                    foreach (Json311.Json311 entry in dataset)
+                    foreach (Json311 entry in dataset)
                     {
                       
                         /// <remarks> 
@@ -305,19 +316,23 @@ namespace PgsqlDriver
                 Console.WriteLine(last_up_date);
 
                 /// <remarks> 
-                /// Update the stored Date in the checktime table
+                /// Update the stored Date in the checktime table, only update the time
+                /// if we are actually adding data and not just for a test
                 /// </remarks>
-                NpgsqlCommand dropCheck = new NpgsqlCommand("DROP TABLE checktime", conn);
-                dropCheck.ExecuteNonQuery();
-                NpgsqlCommand newCheck = new NpgsqlCommand("CREATE TABLE checktime (curr_up_date timestamp)", conn);
-                newCheck.ExecuteNonQuery();
-                using (var writer = conn.BeginBinaryImport("COPY checktime FROM STDIN (FORMAT BINARY)"))
+                if(updateTime == true)
                 {
-                    writer.StartRow();
-                    writer.Write(most_recent);
-                    writer.Complete();
+                    NpgsqlCommand dropCheck = new NpgsqlCommand("DROP TABLE checktime", conn);
+                    dropCheck.ExecuteNonQuery();
+                    NpgsqlCommand newCheck = new NpgsqlCommand("CREATE TABLE checktime (curr_up_date timestamp)", conn);
+                    newCheck.ExecuteNonQuery();
+                    using (var writer = conn.BeginBinaryImport("COPY checktime FROM STDIN (FORMAT BINARY)"))
+                    {
+                        writer.StartRow();
+                        writer.Write(most_recent);
+                        writer.Complete();
+                    }
                 }
-
+               
                 /// <remarks> 
                 /// Closes the connection when we are finished with it
                 /// </remarks>
@@ -351,40 +366,12 @@ namespace PgsqlDriver
             }
         }
 
-        /// <summary>
-        /// Checks to see if the device has internet connection 
-        /// (it is also possible that the device was not whitelisted so it may not be able to connect
-        ///     I will try to see if it is possible to remotely whitelist but I doubt it)
-        ///  
-        /// </summary>
-        /// <returns>Returns the connection status</returns>
-        public bool CheckInternet()
-        {
-            Ping p1 = new Ping();
-            PingReply PR = p1.Send("35.193.33.89");
-            // check when the ping is not success
-            while (!PR.Status.ToString().Equals("Success"))
-            {
-                Console.WriteLine(PR.Status.ToString());
-                PR = p1.Send("35.193.33.89");
-            }
-            // check after the ping is n success
-            while (PR.Status.ToString().Equals("Success"))
-            {
-                Console.WriteLine(PR.Status.ToString());
-                PR = p1.Send("35.193.33.89");
-            }
-            return true; 
-        }
-
 
 
 
         /// <summary>
         /// This is just to check the types, the actual table has already been created
-        /// This code will remain in case we need to create a new database t
-        /// 
-        /// used to return, now is just used in case we need to create a new table 
+        /// This code will remain in case we need to create a new database
         /// </summary>
         /// <param name="connString">the connection string to connect to our DB</param>
         public void Validate(String connString)
