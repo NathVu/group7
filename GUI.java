@@ -3,6 +3,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -13,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.*;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ScrollBar;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.io.IOException;
@@ -26,7 +28,7 @@ public class GUI extends Application {
 
     public void start(Stage primaryStage) {
 
-        Text title = new Text("笘� 311 CALLS MANAGER 笘�");
+        Text title = new Text("☏ 311 CALLS MANAGER ☏");
         title.setId("title");
         Text te1 = new Text("From(HH:MM):");
         Text te2 = new Text("To(HH:MM):");
@@ -91,7 +93,7 @@ public class GUI extends Application {
         TableColumn streetCol = new TableColumn("Street");
         streetCol.setMinWidth(200);
         streetCol.setCellFactory(new PropertyValueFactory<>("street"));
-        
+
         TableColumn zipCol = new TableColumn("Zip Code");
         zipCol.setMinWidth(100);
         addCol.getColumns().addAll(streetCol,zipCol);
@@ -120,6 +122,14 @@ public class GUI extends Application {
         root.getChildren().addAll(new HBox(),title,top1,top2);
         root.setSpacing(40);
         root.setAlignment(Pos.TOP_CENTER);
+	    
+	ScrollBar vscroll = new ScrollBar();
+        vscroll.setMin(0);
+        vscroll.setMax(250);
+        vscroll.setValue(100);
+        vscroll.setOrientation(Orientation.VERTICAL);
+        vscroll.setTranslateY(20);
+        root.getChildren().addAll(vscroll);
 
         Scene scene = new Scene(root,1300,800);
         scene.getStylesheets().add("GUI_CSS_Format.css");
@@ -141,23 +151,23 @@ public class GUI extends Application {
         });
     }
     public static void main(String[] args) throws Exception{
-    		try {
+        try {
 		    /*String databaseName = "postgres";
-		    	
+
 		    Class.forName("org.postgresql.Driver");
-		
+
 		    String username = "ivan";
 		    String password = "NT0408";
-		    	
+
 		    String url = "jdbc:postgresql://35.193.33.89/group7";
-		
+
 		    Connection connection = DriverManager.getConnection(url, username, password);*/
-		    String url = "jdbc:postgresql://35.193.33.89/group7?user=ivan&password=NT0408&ssl=true";
-		    Connection conn = DriverManager.getConnection(url);
-		}
-    		catch(Exception e){
-    			System.out.println(e);
-    		}
+            String url = "jdbc:postgresql://35.193.33.89/group7?user=ivan&password=NT0408&ssl=true";
+            Connection conn = DriverManager.getConnection(url);
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
         launch(args);
     }
 }
