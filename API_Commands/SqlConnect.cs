@@ -166,18 +166,21 @@ namespace PgsqlDriver
                 /// We cannot read and write over the same connection so we need to retrieve the dateTime so we can check it against the timestamp
                 /// of the entries later
                 /// </remarks>
-                using (NpgsqlCommand checkDate = new NpgsqlCommand("SELECT * FROM checktime", conn))
-                using (NpgsqlDataReader reader = checkDate.ExecuteReader())
+                if (updateTime == true)
                 {
-                    try
+                    using (NpgsqlCommand checkDate = new NpgsqlCommand("SELECT * FROM checktime", conn))
+                    using (NpgsqlDataReader reader = checkDate.ExecuteReader())
                     {
-                        while (reader.Read())
+                        try
                         {
-                            last_date = reader.GetTimeStamp(0);
-                            reader.Close();
+                            while (reader.Read())
+                            {
+                                last_date = reader.GetTimeStamp(0);
+                                reader.Close();
+                            }
                         }
+                        catch (Exception a) { Console.WriteLine(a); }
                     }
-                    catch (Exception a) { Console.WriteLine(a); }
                 }
                 int oldC = 0, newC = 0;
                 /// <remarks>
