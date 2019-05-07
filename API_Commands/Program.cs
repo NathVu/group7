@@ -28,7 +28,6 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
 
-
             SqlConnect dBConnect = new SqlConnect();
             String connString = dBConnect.Connect();
             Console.ReadKey();

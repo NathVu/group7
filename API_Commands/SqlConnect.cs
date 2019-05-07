@@ -32,14 +32,10 @@ namespace PgsqlDriver
             }
             pass.Replace(" ", ""); //remove accidental whitespace
             Console.Write("Testing Connection: ");
-            //String connString = "Host=35.193.33.89;Username=" + user + ";Password=" + pass + ";Database=postgres";
             /// <remarks>
             /// we bind the proxy to port 5433 using the command 
             /// cloud_sql_proxy -instances=<INSTANCE_CONNECTION_NAME>=tcp:5432 \
             /// -credential_file =< PATH_TO_KEY_FILE > &
-            /// 
-            /// In my specific case that is:
-            /// cloud_sql_proxy -instances=windy-cedar-235801:us-central1:group7-311call=tcp:5433 \ -credential_file=windy-cedar-235801-480d574f674b.json &
             ///  </remarks>
             String connString = "Host=127.0.0.1;Port=5433;Username=" + user + ";Password=" + pass + ";Database=postgres";
 
@@ -52,7 +48,7 @@ namespace PgsqlDriver
                     conn.Close();
                     return connString;
                 }
-            }    catch(Npgsql.PostgresException a)
+            }    catch(Npgsql.PostgresException a) when (newCredentials == true)
                  {
                     Console.WriteLine("Your username and password do not match, try again " + a.GetType());
                     this.Connect();
