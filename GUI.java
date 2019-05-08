@@ -112,7 +112,7 @@ public class GUI extends Application {
         HBox top1 = new HBox(5);
         top1.getChildren().addAll(te4,tf4,te1,tf1,te2,tf2,te3,tf3,btn1,btn2);
         top1.setAlignment(Pos.CENTER);
-        top1.setSpacing(10);
+        top1.setSpacing(20);
 
         HBox top2 = new HBox(1);
         top2.getChildren().addAll(table);
@@ -120,16 +120,23 @@ public class GUI extends Application {
 
         VBox root = new VBox();
         root.getChildren().addAll(new HBox(),title,top1,top2);
-        root.setSpacing(40);
+        root.setSpacing(50);
         root.setAlignment(Pos.TOP_CENTER);
-	    
-	ScrollBar vscroll = new ScrollBar();
+
+        ScrollBar hscroll = new ScrollBar();
+        hscroll.setMin(0);
+        hscroll.setMax(260);
+        hscroll.setValue(100);
+        hscroll.setOrientation(Orientation.HORIZONTAL);
+
+        ScrollBar vscroll = new ScrollBar();
         vscroll.setMin(0);
-        vscroll.setMax(250);
+        vscroll.setMax(260);
         vscroll.setValue(100);
         vscroll.setOrientation(Orientation.VERTICAL);
         vscroll.setTranslateY(20);
-        root.getChildren().addAll(vscroll);
+        root.getChildren().addAll(hscroll, vscroll);
+
 
         Scene scene = new Scene(root,1300,800);
         scene.getStylesheets().add("GUI_CSS_Format.css");
