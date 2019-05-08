@@ -66,3 +66,13 @@
     -fx-border-width: 3px;
     -fx-effect: dropshadow(three-pass-box, gray, 18, 0.5, 6, 0);
 }
+
+.scroll-bar {
+    -fx-background-color: lightgray, gray;
+    -fx-border-style: none;
+    -fx-opacity: 0.5;
+    -fx-pref-width: 10;
+    -fx-pref-height: 1;
+    -fx-padding: 2;
+}
+
