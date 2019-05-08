@@ -129,13 +129,13 @@ public class GUI extends Application {
         hscroll.setValue(100);
         hscroll.setOrientation(Orientation.HORIZONTAL);
 
-        ScrollBar vscroll = new ScrollBar();
+        /*ScrollBar vscroll = new ScrollBar();
         vscroll.setMin(0);
         vscroll.setMax(260);
         vscroll.setValue(100);
         vscroll.setOrientation(Orientation.VERTICAL);
         vscroll.setTranslateY(20);
-        root.getChildren().addAll(hscroll, vscroll);
+        root.getChildren().addAll(hscroll, vscroll);*/
 
 
         Scene scene = new Scene(root,1300,800);
@@ -169,7 +169,7 @@ public class GUI extends Application {
 		    String url = "jdbc:postgresql://35.193.33.89/group7";
 
 		    Connection connection = DriverManager.getConnection(url, username, password);*/
-            String url = "jdbc:postgresql://35.193.33.89/group7?user=ivan&password=NT0408&ssl=true";
+            String url = "jdbc:postgresql://127.0.0.1:5432/group7?user=ivan&password=NT0408&ssl=true";
             Connection conn = DriverManager.getConnection(url);
         }
         catch(Exception e){
