@@ -11,27 +11,26 @@ using NUnit.Framework;
 namespace ConsoleApp1
 {
     /// <summary>
-    /// our driver class, contains our main and calls of all the functions we need in order to get the data 
-    /// from the 311 database into our psql db 
-    /// 
+    /// our driver class, contains our main and calls of all the functions we need in order to get the data
+    /// from the 311 database into our psql db
+    ///
     /// todo - write a ping function to test internet connection
     /// </summary>
     class Group7
     {
 
         /// <summary>
-        /// our main method 
+        /// our main method
         /// </summary>
-        /// <param name="args">we should never really need arguments passed to main, however we may later decide to 
-        /// modify the program to accept the db name, ip address, username and password as command line arguments 
+        /// <param name="args">we should never really need arguments passed to main, however we may later decide to
+        /// modify the program to accept the db name, ip address, username and password as command line arguments
         /// </param>
         static void Main(string[] args)
         {
 
             SqlConnect dBConnect = new SqlConnect();
             String connString = dBConnect.Connect();
-            Console.ReadKey();
-            dBConnect.CheckDate(connString); 
+            dBConnect.CheckDate(connString);
             DataFormat test = new DataFormat();
             Dictionary<string, object>[] rarr = test.getData();
             List<Json311> forDB = new List<Json311>();
@@ -48,14 +47,14 @@ namespace ConsoleApp1
 
     /// <summary>
     ///  A class to take the data recieved from the API Query
-    ///  And format it usiing our user defined class to 
+    ///  And format it usiing our user defined class to
     /// </summary>
     class DataFormat
     {
 
         /// <summary>
-        /// used to parse our data into our user created type instead of the dictionary that the API 
-        /// call returns 
+        /// used to parse our data into our user created type instead of the dictionary that the API
+        /// call returns
         /// </summary>
         /// <param name="dataset"> recieves out dataset, formatted in getData into an array of Dictionary objects</param>
         /// <returns>The data parsed into our user created class
@@ -63,23 +62,11 @@ namespace ConsoleApp1
         public List<Json311> parseData(Dictionary<string, object>[] dataset)
         {
             List<Json311> dataList = new List<Json311>();
-            DateTime date = DateTime.Today.Date.AddDays(-1);
-            int countY = 0, countT = 0; 
             for (int i = 0; i < dataset.Length; i++)
             {
                 Json311 dItem = new Json311(dataset[i]);
-               if(dItem.Created_date < date)
-                {
-                    dataList.Add(dItem);
-                    countY++;
-                }
-                else
-                {
-                    countT++;
-                }
-                
+                dataList.Add(dItem);
             }
-            Console.WriteLine("Today: " + countT + "     Yesterday: " + countY);
             return dataList;
         }
 
@@ -95,8 +82,8 @@ namespace ConsoleApp1
 
             /// <remarks>
             /// Allows us to read the data
-            /// We convert the dara into an array so it is not in an interface and we are able 
-            /// to read the data that our query returned 
+            /// We convert the dara into an array so it is not in an interface and we are able
+            /// to read the data that our query returned
             /// </remarks>
             Dictionary<string, object>[] results_arr = results.ToArray();
             Dictionary<string, object> val = results_arr[0];
@@ -109,7 +96,7 @@ namespace ConsoleApp1
 
 
     /// <summary> Class for managing the Database
-    /// created for code clean-up and easier readability 
+    /// created for code clean-up and easier readability
     /// </summary>
     class ManageDB
     {
@@ -126,18 +113,18 @@ namespace ConsoleApp1
         {
 
             /// <remarks>
-            /// This requires the SODA library 
-            /// It can be installed from NuGet in Visual studio using 
+            /// This requires the SODA library
+            /// It can be installed from NuGet in Visual studio using
             /// Install-Package CSM.SodaDotNet
-            /// </remarks>>   
+            /// </remarks>>
             SODA.SodaClient client = new SodaClient("https://data.cityofnewyork.us", "PVGjhHLj8Svy7Ryz0uJgW9IBh");
 
             /// <remarks>
             /// The documentation on the web is outdated.
-            /// The .NET library has been updated to no longer allow generic typing. 
+            /// The .NET library has been updated to no longer allow generic typing.
             /// You must use either Dictionary(String,Object) - use <> but not allowed in XML comments
             /// OR a user-defined json serializable class - their documentation does not explain how to do this
-            /// well enough, however so we are sticking with the Generic Collection specified 
+            /// well enough, however so we are sticking with the Generic Collection specified
             /// </remarks>>
             SODA.Resource<Dictionary<string, object>> dataset = client.GetResource<Dictionary<string, object>>("fhrw-4uyv");
 
@@ -155,7 +142,7 @@ namespace ConsoleApp1
 
             /// <summary>
             /// Testing to make sure that our query returned results
-            /// Will be changed to throw an error instead of printing a value 
+            /// Will be changed to throw an error instead of printing a value
             /// </summary>
             int SizeOfList;
             test.TestIEnum(ref results, out SizeOfList);
@@ -168,7 +155,7 @@ namespace ConsoleApp1
         /// It gets the current data (and yesterdays date) so that the code does not need to be updated every day
         /// and composes a query object (SODA.SoqlQuery) to reurn to LoadDB to query the dataset
         /// Utilizes the DateTime type to get todays date
-        /// </summary>
+        /// </summary>s
         /// <returns>our Query in their defined type - SODA.SoqlQuery </returns>
         public SODA.SoqlQuery GetQueryDate()
         {
@@ -179,7 +166,7 @@ namespace ConsoleApp1
             String year = today.Year.ToString();
 
             /// <remarks>
-            /// Their query requires typing with a 0 in front of the month so we 
+            /// Their query requires typing with a 0 in front of the month so we
             /// check the formatting and add a 0 if necessary
             /// </remarks>
             String month;
@@ -193,7 +180,7 @@ namespace ConsoleApp1
             }
 
             /// <remarks>
-            /// Since the data is only updated every day for the day before in part and fully for 
+            /// Since the data is only updated every day for the day before in part and fully for
             /// 2 days before we get the dates for yesterday and the day before for filtering
             /// </remarks>
             String day = (today.Day - 2).ToString();
@@ -202,7 +189,7 @@ namespace ConsoleApp1
             /// <remarks>
             ///The date field in the Query needs to be of type
             ///yyyy-mm-dd + T + hh:mm:ss.nnn (hours, minutes, seconds and nanoseconds.
-            ///We format the data here to be in the correct type as the ToString method provided by 
+            ///We format the data here to be in the correct type as the ToString method provided by
             ///the DateTime class does not allow for formatting in this manner
             /// </remarks>
             String date = "\"" + year + "-" + month + "-" + day + "T00:00:00.000\"";
@@ -220,7 +207,7 @@ namespace ConsoleApp1
             string cdate = "created_date";
 
             /// <remarks>
-            /// Usage of creating a new SoqlQuery - 
+            /// Usage of creating a new SoqlQuery -
             /// Note: TimeStamp (or other literal) must be in quotes or else it gets treated like a variable which will throw an error
             /// Field + "function" + "comparison type"
             /// Select can be used to select specific fields but we want all data associated with the calls
