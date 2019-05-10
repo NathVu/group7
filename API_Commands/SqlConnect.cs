@@ -189,21 +189,14 @@ namespace PgsqlDriver
                 {
                     foreach (Json311 entry in dataset)
                     {
+                        if(entry.Created_date == null)
+                        {
+                            continue;
+                        }
                       
                         /// <remarks> 
                         /// Check the retrieved dateTime against the entries dateTime
                         /// </remarks>
-                        NpgsqlDateTime entryDate = Convert.ToDateTime(entry.Created_date);
-                        if (entryDate < last_date)
-                        {
-                            if(most_recent < entryDate)
-                            {
-                                most_recent = entryDate;
-                            }
-                            oldC++;
-                            continue;
-                       }
-
                          
                         writer.StartRow();
                         writer.Write(entry.Unique_key);
@@ -311,9 +304,6 @@ namespace PgsqlDriver
                     writer.Complete();
                 }
                 Console.WriteLine("New Records:" + newC + " Old Records: " + oldC);
-                NpgsqlDateTime last_up_date = Convert.ToDateTime(DateTime.Now);
-                Console.WriteLine(last_up_date);
-
                 /// <remarks> 
                 /// Update the stored Date in the checktime table, only update the time
                 /// if we are actually adding data and not just for a test
@@ -327,7 +317,7 @@ namespace PgsqlDriver
                     using (var writer = conn.BeginBinaryImport("COPY checktime FROM STDIN (FORMAT BINARY)"))
                     {
                         writer.StartRow();
-                        writer.Write(most_recent);
+                        writer.Write(DateTime.Now.AddDays(-2));
                         writer.Complete();
                     }
                 }
@@ -382,7 +372,6 @@ namespace PgsqlDriver
                 /// Make Sure data is not duplicated
                 /// </remarks>
                 conn.Open();
-                this.CheckConnection(conn);
                 NpgsqlCommand dropCheck = new NpgsqlCommand("DROP TABLE IF EXISTS checktime", conn);
                 dropCheck.ExecuteNonQuery();
                 NpgsqlCommand newCheck = new NpgsqlCommand("CREATE TABLE checktime (curr_up_date timestamp)", conn);
