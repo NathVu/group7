@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.scene.control.TextField;
 import javafx.scene.text.*;
 import javafx.scene.control.TableColumn;
@@ -17,48 +18,59 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.ScrollBar;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import java.io.IOException;
 import java.sql.*;
-import java.util.Properties;
-import javafx.scene.control.cell.PropertyValueFactory;
+import java.util.Vector;
+import java.time.*;
+
+import javafx.beans.property.SimpleStringProperty;
 
 public class GUI extends Application {
 
-    private TableView table = new TableView();
+    private static TableView<Vector> table = new TableView();
 
     public void start(Stage primaryStage) {
 
         Text title = new Text("☏ 311 CALLS MANAGER ☏");
         title.setId("title");
-        Text te1 = new Text("From(HH:MM):");
-        Text te2 = new Text("To(HH:MM):");
-        Text te3 = new Text("ID:");
-        Text te4 = new Text("Date(MM/DD/YYYY):");
+        Text te1 = new Text("ID:");
+        Text te2 = new Text("From(YYYY-MM-DD):");
+        Text te3 = new Text("To(YYYY-MM-DD):");
 
         TextField tf1 = new TextField("");
         TextField tf2 = new TextField("");
         TextField tf3 = new TextField("");
-        TextField tf4 = new TextField("");
-        addTextLimiter(tf1,5);
-        addTextLimiter(tf2,5);
-        addTextLimiter(tf3,8);
-        addTextLimiter(tf4,10);
+        
+        addTextLimiter(tf1,8);
+        addTextLimiter(tf2,10);
+        addTextLimiter(tf3,10);
+        
+        tf2.setPrefWidth(200);
+        tf3.setPrefWidth(200);
+        
+        Button btn0=new Button("Search");
+        btn0.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                String id=tf1.getText();
+                if(tf1.getText().equals(""))
+                		System.out.println("boo");
+                else	{
+                		query("SELECT * FROM calls WHERE unique_key='" + id + "';");
+                }	
+            }
+        });
+        
 
         Button btn1 = new Button("Search");
         btn1.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-                String date = null;
-                String startTime = null;
-                String endTime = null;
-                String id = null;
-                if (!tf1.getText().equals(""))
-                    date = tf1.getText();
-                if (!tf2.getText().equals(""))
-                    startTime = tf2.getText();
-                if (!tf3.getText().equals(""))
-                    endTime = tf3.getText();
-                if (!tf4.getText().equals(""))
-                    id = tf4.getText();
+                String start=tf2.getText();
+                String end=tf3.getText();
+                if(tf2.getText().equals(""))
+                		System.out.println("boo");
+                if(tf3.getText().equals(""))
+                		System.out.println("boo");
+                System.out.println(tf1.getText());
+                query("SELECT * FROM calls WHERE created_date BETWEEN '" + start + "' AND '" + end + "';");
             }
         });
 
@@ -66,51 +78,117 @@ public class GUI extends Application {
         btn2.setId("Reset");
         btn2.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-
+            		query("SELECT * FROM calls LIMIT 100;");
             }
         });
 
         table.setEditable(false);
 
-        TableColumn idCol = new TableColumn("ID");
-        idCol.setMinWidth(100);
-        idCol.setCellFactory(new PropertyValueFactory<>("id"));
+        TableColumn<Vector,String> idCol = new TableColumn("ID");
+        idCol.setMinWidth(75);
+        idCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
+        	@Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
+                if (p.getValue() != null) 
+                    return new SimpleStringProperty(p.getValue().get(0).toString());
+                else 
+                    return new SimpleStringProperty("");
+            }
+        });
 
-        TableColumn openCol = new TableColumn("Open Date and Time");
-        openCol.setMinWidth(150);
-        openCol.setCellFactory(new PropertyValueFactory<>("open"));
+        TableColumn<Vector,String> openCol = new TableColumn("Open Date and Time");
+        openCol.setMinWidth(180);
+        openCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
+        	@Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
+                if (p.getValue() != null) 
+                    return new SimpleStringProperty(p.getValue().get(1).toString());
+                else 
+                    return new SimpleStringProperty("");
+            }
+        });
 
-        TableColumn closeCol = new TableColumn("Closed Date and Time");
-        closeCol.setMinWidth(175);
-        closeCol.setCellFactory(new PropertyValueFactory<>("close"));
-
-        TableColumn typeCol = new TableColumn("Type of Call");
-        typeCol.setMinWidth(175);
-        typeCol.setCellFactory(new PropertyValueFactory<>("type"));
-
-        TableColumn addCol = new TableColumn("Address");
-        addCol.setCellFactory(new PropertyValueFactory<>("add"));
-        TableColumn streetCol = new TableColumn("Street");
-        streetCol.setMinWidth(200);
-        streetCol.setCellFactory(new PropertyValueFactory<>("street"));
-
-        TableColumn zipCol = new TableColumn("Zip Code");
-        zipCol.setMinWidth(100);
-        addCol.getColumns().addAll(streetCol,zipCol);
-        zipCol.setCellFactory(new PropertyValueFactory<>("zip"));
-
-        TableColumn depCol = new TableColumn("Department");
+        TableColumn<Vector,String> closeCol = new TableColumn("Closed Date and Time");
+        closeCol.setMinWidth(180);
+        closeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
+        	@Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
+                if (p.getValue() != null) 
+                    return new SimpleStringProperty(p.getValue().get(2).toString());
+                else 
+                    return new SimpleStringProperty("");
+            }
+        });
+        
+        TableColumn<Vector,String> depCol = new TableColumn("Department");
         depCol.setMinWidth(100);
-        depCol.setCellFactory(new PropertyValueFactory<>("dep"));
+        depCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
+        	@Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
+                if (p.getValue() != null) 
+                    return new SimpleStringProperty(p.getValue().get(3).toString());
+                else 
+                    return new SimpleStringProperty("");
+            }
+        });
 
-        TableColumn statCol = new TableColumn("Status");
+        TableColumn<Vector,String> typeCol = new TableColumn("Type of Call");
+        typeCol.setMinWidth(175);
+        typeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
+        	@Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
+                if (p.getValue() != null) 
+                    return new SimpleStringProperty(p.getValue().get(4).toString());
+                else 
+                    return new SimpleStringProperty("");
+            }
+        });
+        
+        TableColumn<Vector,String> zipCol = new TableColumn("Zip Code");
+        zipCol.setMinWidth(100);
+        zipCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
+        	@Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
+                if (p.getValue() != null) 
+                    return new SimpleStringProperty(p.getValue().get(5).toString());
+                else 
+                    return new SimpleStringProperty("");
+            }
+        });
+
+        TableColumn<Vector,String> addCol = new TableColumn("Address");
+        
+        TableColumn<Vector,String> streetCol = new TableColumn("Street");
+        streetCol.setMinWidth(200);
+        streetCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
+        	@Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
+                if (p.getValue() != null) 
+                    return new SimpleStringProperty(p.getValue().get(6).toString());
+                else 
+                    return new SimpleStringProperty("");
+            }
+        });
+
+        
+        addCol.getColumns().addAll(streetCol,zipCol);
+
+        TableColumn<Vector,String> statCol = new TableColumn("Status");
         statCol.setMinWidth(100);
-        statCol.setCellFactory(new PropertyValueFactory<>("stat"));
+        statCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
+        	@Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
+                if (p.getValue() != null) 
+                    return new SimpleStringProperty(p.getValue().get(7).toString());
+                else 
+                    return new SimpleStringProperty("");
+            }
+        });
 
         table.getColumns().addAll(idCol,openCol,closeCol,depCol,typeCol,addCol,statCol);
 
         HBox top1 = new HBox(5);
-        top1.getChildren().addAll(te4,tf4,te1,tf1,te2,tf2,te3,tf3,btn1,btn2);
+        top1.getChildren().addAll(te1,tf1,btn0,te2,tf2,te3,tf3,btn1,btn2);
         top1.setAlignment(Pos.CENTER);
         top1.setSpacing(20);
 
@@ -128,15 +206,6 @@ public class GUI extends Application {
         hscroll.setMax(260);
         hscroll.setValue(100);
         hscroll.setOrientation(Orientation.HORIZONTAL);
-
-        /*ScrollBar vscroll = new ScrollBar();
-        vscroll.setMin(0);
-        vscroll.setMax(260);
-        vscroll.setValue(100);
-        vscroll.setOrientation(Orientation.VERTICAL);
-        vscroll.setTranslateY(20);
-        root.getChildren().addAll(hscroll, vscroll);*/
-
 
         Scene scene = new Scene(root,1300,800);
         scene.getStylesheets().add("GUI_CSS_Format.css");
@@ -157,24 +226,45 @@ public class GUI extends Application {
             }
         });
     }
-    public static void main(String[] args) throws Exception{
-        try {
-		    /*String databaseName = "postgres";
-
-		    Class.forName("org.postgresql.Driver");
-
-		    String username = "ivan";
-		    String password = "NT0408";
-
-		    String url = "jdbc:postgresql://35.193.33.89/group7";
-
-		    Connection connection = DriverManager.getConnection(url, username, password);*/
-            String url = "jdbc:postgresql://127.0.0.1:5432/group7?user=ivan&password=NT0408&ssl=true";
-            Connection conn = DriverManager.getConnection(url);
-        }
-        catch(Exception e){
-            System.out.println(e);
-        }
+    public static void main(String[] args){
+        	query("SELECT * FROM calls LIMIT 100;");
         launch(args);
+    }
+    public static void query(String line){
+    	 try {
+     	 String url = "jdbc:postgresql://127.0.0.1:5435/postgres";
+         Connection conn = DriverManager.getConnection(url,"ivan","NT0408");
+         Statement stat = conn.createStatement();
+         System.out.println(line);
+         ResultSet rs = stat.executeQuery(line);
+         ResultSetMetaData metaData = rs.getMetaData();
+         ObservableList<Vector> data = FXCollections.observableArrayList();
+         int columns = 8;
+         /*Vector columnNames = new Vector();
+         for (int i = 1; i <= 20; i++) {
+             System.out.println(metaData.getColumnName(i));
+         }*/
+         while (rs.next()) {
+             Vector row = new Vector(columns);
+             for (int i = 1; i <= 20; i++) {
+             		if(i==1 || i==2 || i==3 || i==4 || i==6 || i==9 || i==10 || i==20) {
+             			if(rs.getObject(i)!=null)
+             				if(i==2 || i==3)
+             					row.addElement(rs.getObject(i).toString().substring(0,rs.getObject(i).toString().length()-2));	
+             				else
+             					row.addElement(rs.getObject(i).toString());
+             			else
+             				row.addElement(new String("N/A"));
+             		}
+             }	
+             data.add(row);
+         }		
+         table.setItems(data);
+         rs.close();
+         stat.close();
+     }
+     catch(SQLException e){
+     		System.out.println(e.getMessage());
+     }
     }
 }

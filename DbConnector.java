@@ -1,6 +1,6 @@
 
 
-
+/*
 import java.sql.*;
 
 public class DbConnector 
@@ -24,6 +24,7 @@ public class DbConnector
     {
      String UserName;String Password;
      String connection = "UserName, Password";
+     return "";
      try{
       using (var connectionsetting = new NpgsqlConnection(connectionString);
       connectionsetting.Open();
@@ -195,4 +196,4 @@ public class DbConnector
       
        
        
-}
+}*/
