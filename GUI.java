@@ -35,8 +35,11 @@ public class GUI extends Application {
         Text title = new Text("☏ 311 CALLS MANAGER ☏");
         title.setId("title");
         Text te1 = new Text("ID:");
+	te1.setId("te1");
         Text te2 = new Text("From(YYYY-MM-DD):");
+	te2.setId("te2");
         Text te3 = new Text("To(YYYY-MM-DD):");
+	te3.setId("te3");
 
         TextField tf1 = new TextField("");
         TextField tf2 = new TextField("");
@@ -226,7 +229,7 @@ public class GUI extends Application {
         hscroll.setValue(100);
         hscroll.setOrientation(Orientation.HORIZONTAL);
 
-        Scene scene = new Scene(root,1300,800);
+        Scene scene = new Scene(root,2000,1020);
         scene.getStylesheets().add("GUI_CSS_Format.css");
 
         primaryStage.setTitle("311 Calls");
