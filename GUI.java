@@ -20,7 +20,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.sql.*;
 import java.util.Vector;
-import java.time.*;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 import javafx.beans.property.SimpleStringProperty;
 
@@ -51,8 +53,13 @@ public class GUI extends Application {
         btn0.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 String id=tf1.getText();
-                if(tf1.getText().equals(""))
-                		System.out.println("boo");
+                if(tf1.getText().equals("")) {
+                		Alert a = new Alert(Alert.AlertType.ERROR);
+                		a.setTitle("Error Message");
+                		a.setHeaderText("Parameter not found");
+                		a.setContentText("Please input an id.");
+                		a.showAndWait();
+                }	
                 else	{
                 		query("SELECT * FROM calls WHERE unique_key='" + id + "';");
                 }	
@@ -65,12 +72,24 @@ public class GUI extends Application {
             public void handle(ActionEvent event) {
                 String start=tf2.getText();
                 String end=tf3.getText();
-                if(tf2.getText().equals(""))
-                		System.out.println("boo");
-                if(tf3.getText().equals(""))
-                		System.out.println("boo");
-                System.out.println(tf1.getText());
-                query("SELECT * FROM calls WHERE created_date BETWEEN '" + start + "' AND '" + end + "';");
+                if(tf2.getText().equals("")) {
+	                	Alert a = new Alert(Alert.AlertType.ERROR);
+	            		a.setTitle("Error Message");
+	            		a.setHeaderText("Parameter not found");
+	            		a.setContentText("Please input a starting date.");
+	            		a.showAndWait();
+                }
+                else if(tf3.getText().equals("")) {
+	                	Alert a = new Alert(Alert.AlertType.ERROR);
+	            		a.setTitle("Error Message");
+	            		a.setHeaderText("Parameter not found");
+	            		a.setContentText("Please input an end date.");
+	            		a.showAndWait();
+                }
+                else {
+                		System.out.println(tf1.getText());
+                    query("SELECT * FROM calls WHERE created_date BETWEEN '" + start + "' AND '" + end + "' LIMIT 200;");
+                }
             }
         });
 
@@ -227,15 +246,15 @@ public class GUI extends Application {
         });
     }
     public static void main(String[] args){
-        	query("SELECT * FROM calls LIMIT 100;");
+        	query("SELECT * FROM calls LIMIT 200;");
         launch(args);
     }
     public static void query(String line){
     	 try {
-     	 String url = "jdbc:postgresql://127.0.0.1:5435/postgres";
+     	 String url = "jdbc:postgresql://127.0.0.1:5437/postgres";
          Connection conn = DriverManager.getConnection(url,"ivan","NT0408");
          Statement stat = conn.createStatement();
-         System.out.println(line);
+         //System.out.println(line);
          ResultSet rs = stat.executeQuery(line);
          ResultSetMetaData metaData = rs.getMetaData();
          ObservableList<Vector> data = FXCollections.observableArrayList();
@@ -266,5 +285,5 @@ public class GUI extends Application {
      catch(SQLException e){
      		System.out.println(e.getMessage());
      }
-    }
+   }
 }
