@@ -100,7 +100,7 @@ public class GUI extends Application {
         btn2.setId("Reset");
         btn2.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-            		query("SELECT * FROM calls LIMIT 100;");
+            		query("SELECT * FROM calls ORDER BY Created_date DESC LIMIT 200;");
             }
         });
 
@@ -249,12 +249,12 @@ public class GUI extends Application {
         });
     }
     public static void main(String[] args){
-        	query("SELECT * FROM calls LIMIT 200;");
+        	query("SELECT * FROM calls ORDER BY Created_date DESC LIMIT 200;");
         launch(args);
     }
     public static void query(String line){
     	 try {
-     	 String url = "jdbc:postgresql://127.0.0.1:5437/postgres";
+     	 String url = "jdbc:postgresql://127.0.0.1:5438/postgres";
          Connection conn = DriverManager.getConnection(url,"ivan","NT0408");
          Statement stat = conn.createStatement();
          //System.out.println(line);
