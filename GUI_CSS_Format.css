@@ -42,7 +42,7 @@
     -fx-border-style: solid;
     -fx-border-color: ghostwhite;
     -fx-border-width: 1px;
-    -fx-font-weight: bolder;
+    -fx-font-weight: bold;
     -fx-font-size: medium;
 }
 
@@ -60,7 +60,7 @@
     -fx-background-radius: 20;
     -fx-border-style: none;
     -fx-font-size: large;
-    -fx-font-weight: bolder;
+    -fx-font-weight: bold;
     -fx-effect: dropshadow(one-pass-box, black, 14, 0, 6, 0);
 }
 
