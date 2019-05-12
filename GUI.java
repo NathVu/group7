@@ -91,7 +91,7 @@ public class GUI extends Application {
                 }
                 else {
                 		System.out.println(tf1.getText());
-                    query("SELECT * FROM calls WHERE created_date BETWEEN '" + start + "' AND '" + end + "' LIMIT 200;");
+                    query("SELECT * FROM calls WHERE created_date BETWEEN '" + start + "' AND '" + end + "' LIMIT 100;");
                 }
             }
         });
@@ -100,7 +100,7 @@ public class GUI extends Application {
         btn2.setId("Reset");
         btn2.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-            		query("SELECT * FROM calls ORDER BY Created_date DESC LIMIT 200;");
+            		query("SELECT * FROM calls ORDER BY Created_date DESC LIMIT 100;");
             }
         });
 
@@ -229,11 +229,12 @@ public class GUI extends Application {
         hscroll.setValue(100);
         hscroll.setOrientation(Orientation.HORIZONTAL);
 
-        Scene scene = new Scene(root,2000,1020);
+        Scene scene = new Scene(root,1920,1080);
         scene.getStylesheets().add("GUI_CSS_Format.css");
 
         primaryStage.setTitle("311 Calls");
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
 
     }
@@ -249,7 +250,7 @@ public class GUI extends Application {
         });
     }
     public static void main(String[] args){
-        	query("SELECT * FROM calls ORDER BY Created_date DESC LIMIT 200;");
+        	query("SELECT * FROM calls ORDER BY Created_date DESC LIMIT 100;");
         launch(args);
     }
     public static void query(String line){
