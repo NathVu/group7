@@ -33,32 +33,35 @@ public class GUI extends Application {
         Text title = new Text("☏ 311 CALLS MANAGER ☏");
         title.setId("title");
         Text te1 = new Text("ID:");
+        te1.setId("te1");
         Text te2 = new Text("From(YYYY-MM-DD):");
+        te2.setId("te2");
         Text te3 = new Text("To(YYYY-MM-DD):");
+        te3.setId("te3");
 
         TextField tf1 = new TextField("");
         TextField tf2 = new TextField("");
         TextField tf3 = new TextField("");
-        
+
         addTextLimiter(tf1,8);
         addTextLimiter(tf2,10);
         addTextLimiter(tf3,10);
-        
+
         tf2.setPrefWidth(200);
         tf3.setPrefWidth(200);
-        
+
         Button btn0=new Button("Search");
         btn0.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 String id=tf1.getText();
                 if(tf1.getText().equals(""))
-                		System.out.println("boo");
+                    System.out.println("boo");
                 else	{
-                		query("SELECT * FROM calls WHERE unique_key='" + id + "';");
-                }	
+                    query("SELECT * FROM calls WHERE unique_key='" + id + "';");
+                }
             }
         });
-        
+
 
         Button btn1 = new Button("Search");
         btn1.setOnAction(new EventHandler<ActionEvent>() {
@@ -66,9 +69,9 @@ public class GUI extends Application {
                 String start=tf2.getText();
                 String end=tf3.getText();
                 if(tf2.getText().equals(""))
-                		System.out.println("boo");
+                    System.out.println("boo");
                 if(tf3.getText().equals(""))
-                		System.out.println("boo");
+                    System.out.println("boo");
                 System.out.println(tf1.getText());
                 query("SELECT * FROM calls WHERE created_date BETWEEN '" + start + "' AND '" + end + "';");
             }
@@ -78,7 +81,7 @@ public class GUI extends Application {
         btn2.setId("Reset");
         btn2.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-            		query("SELECT * FROM calls LIMIT 100;");
+                query("SELECT * FROM calls LIMIT 100;");
             }
         });
 
@@ -87,11 +90,11 @@ public class GUI extends Application {
         TableColumn<Vector,String> idCol = new TableColumn("ID");
         idCol.setMinWidth(75);
         idCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
-        	@Override
+            @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
-                if (p.getValue() != null) 
+                if (p.getValue() != null)
                     return new SimpleStringProperty(p.getValue().get(0).toString());
-                else 
+                else
                     return new SimpleStringProperty("");
             }
         });
@@ -99,11 +102,11 @@ public class GUI extends Application {
         TableColumn<Vector,String> openCol = new TableColumn("Open Date and Time");
         openCol.setMinWidth(180);
         openCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
-        	@Override
+            @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
-                if (p.getValue() != null) 
+                if (p.getValue() != null)
                     return new SimpleStringProperty(p.getValue().get(1).toString());
-                else 
+                else
                     return new SimpleStringProperty("");
             }
         });
@@ -111,23 +114,23 @@ public class GUI extends Application {
         TableColumn<Vector,String> closeCol = new TableColumn("Closed Date and Time");
         closeCol.setMinWidth(180);
         closeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
-        	@Override
+            @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
-                if (p.getValue() != null) 
+                if (p.getValue() != null)
                     return new SimpleStringProperty(p.getValue().get(2).toString());
-                else 
+                else
                     return new SimpleStringProperty("");
             }
         });
-        
+
         TableColumn<Vector,String> depCol = new TableColumn("Department");
         depCol.setMinWidth(100);
         depCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
-        	@Override
+            @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
-                if (p.getValue() != null) 
+                if (p.getValue() != null)
                     return new SimpleStringProperty(p.getValue().get(3).toString());
-                else 
+                else
                     return new SimpleStringProperty("");
             }
         });
@@ -135,52 +138,52 @@ public class GUI extends Application {
         TableColumn<Vector,String> typeCol = new TableColumn("Type of Call");
         typeCol.setMinWidth(175);
         typeCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
-        	@Override
+            @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
-                if (p.getValue() != null) 
+                if (p.getValue() != null)
                     return new SimpleStringProperty(p.getValue().get(4).toString());
-                else 
+                else
                     return new SimpleStringProperty("");
             }
         });
-        
+
         TableColumn<Vector,String> zipCol = new TableColumn("Zip Code");
         zipCol.setMinWidth(100);
         zipCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
-        	@Override
+            @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
-                if (p.getValue() != null) 
+                if (p.getValue() != null)
                     return new SimpleStringProperty(p.getValue().get(5).toString());
-                else 
+                else
                     return new SimpleStringProperty("");
             }
         });
 
         TableColumn<Vector,String> addCol = new TableColumn("Address");
-        
+
         TableColumn<Vector,String> streetCol = new TableColumn("Street");
         streetCol.setMinWidth(200);
         streetCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
-        	@Override
+            @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
-                if (p.getValue() != null) 
+                if (p.getValue() != null)
                     return new SimpleStringProperty(p.getValue().get(6).toString());
-                else 
+                else
                     return new SimpleStringProperty("");
             }
         });
 
-        
+
         addCol.getColumns().addAll(streetCol,zipCol);
 
         TableColumn<Vector,String> statCol = new TableColumn("Status");
         statCol.setMinWidth(100);
         statCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
-        	@Override
+            @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
-                if (p.getValue() != null) 
+                if (p.getValue() != null)
                     return new SimpleStringProperty(p.getValue().get(7).toString());
-                else 
+                else
                     return new SimpleStringProperty("");
             }
         });
@@ -207,7 +210,7 @@ public class GUI extends Application {
         hscroll.setValue(100);
         hscroll.setOrientation(Orientation.HORIZONTAL);
 
-        Scene scene = new Scene(root,1300,800);
+        Scene scene = new Scene(root,2000,1020);
         scene.getStylesheets().add("GUI_CSS_Format.css");
 
         primaryStage.setTitle("311 Calls");
@@ -227,44 +230,44 @@ public class GUI extends Application {
         });
     }
     public static void main(String[] args){
-        	query("SELECT * FROM calls LIMIT 100;");
+        query("SELECT * FROM calls LIMIT 100;");
         launch(args);
     }
     public static void query(String line){
-    	 try {
-     	 String url = "jdbc:postgresql://127.0.0.1:5435/postgres";
-         Connection conn = DriverManager.getConnection(url,"ivan","NT0408");
-         Statement stat = conn.createStatement();
-         System.out.println(line);
-         ResultSet rs = stat.executeQuery(line);
-         ResultSetMetaData metaData = rs.getMetaData();
-         ObservableList<Vector> data = FXCollections.observableArrayList();
-         int columns = 8;
+        try {
+            String url = "jdbc:postgresql://127.0.0.1:5435/postgres";
+            Connection conn = DriverManager.getConnection(url,"ivan","NT0408");
+            Statement stat = conn.createStatement();
+            System.out.println(line);
+            ResultSet rs = stat.executeQuery(line);
+            ResultSetMetaData metaData = rs.getMetaData();
+            ObservableList<Vector> data = FXCollections.observableArrayList();
+            int columns = 8;
          /*Vector columnNames = new Vector();
          for (int i = 1; i <= 20; i++) {
              System.out.println(metaData.getColumnName(i));
          }*/
-         while (rs.next()) {
-             Vector row = new Vector(columns);
-             for (int i = 1; i <= 20; i++) {
-             		if(i==1 || i==2 || i==3 || i==4 || i==6 || i==9 || i==10 || i==20) {
-             			if(rs.getObject(i)!=null)
-             				if(i==2 || i==3)
-             					row.addElement(rs.getObject(i).toString().substring(0,rs.getObject(i).toString().length()-2));	
-             				else
-             					row.addElement(rs.getObject(i).toString());
-             			else
-             				row.addElement(new String("N/A"));
-             		}
-             }	
-             data.add(row);
-         }		
-         table.setItems(data);
-         rs.close();
-         stat.close();
-     }
-     catch(SQLException e){
-     		System.out.println(e.getMessage());
-     }
+            while (rs.next()) {
+                Vector row = new Vector(columns);
+                for (int i = 1; i <= 20; i++) {
+                    if(i==1 || i==2 || i==3 || i==4 || i==6 || i==9 || i==10 || i==20) {
+                        if(rs.getObject(i)!=null)
+                            if(i==2 || i==3)
+                                row.addElement(rs.getObject(i).toString().substring(0,rs.getObject(i).toString().length()-2));
+                            else
+                                row.addElement(rs.getObject(i).toString());
+                        else
+                            row.addElement(new String("N/A"));
+                    }
+                }
+                data.add(row);
+            }
+            table.setItems(data);
+            rs.close();
+            stat.close();
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
     }
 }
