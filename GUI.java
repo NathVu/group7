@@ -35,11 +35,11 @@ public class GUI extends Application {
         Text title = new Text("☏ 311 CALLS MANAGER ☏");
         title.setId("title");
         Text te1 = new Text("ID:");
-	te1.setId("te1");
+        te1.setId("te1");
         Text te2 = new Text("From(YYYY-MM-DD):");
-	te2.setId("te2");
+        te2.setId("te2");
         Text te3 = new Text("To(YYYY-MM-DD):");
-	te3.setId("te3");
+        te3.setId("te3");
 
         TextField tf1 = new TextField("");
         TextField tf2 = new TextField("");
@@ -91,7 +91,7 @@ public class GUI extends Application {
                 }
                 else {
                 		System.out.println(tf1.getText());
-                    query("SELECT * FROM calls WHERE created_date BETWEEN '" + start + "' AND '" + end + "' LIMIT 100;");
+                    query("SELECT * FROM calls WHERE created_date BETWEEN '" + start + "' AND '" + end + "' ORDER BY Created_date ASC LIMIT 500;");
                 }
             }
         });
@@ -100,7 +100,10 @@ public class GUI extends Application {
         btn2.setId("Reset");
         btn2.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-            		query("SELECT * FROM calls ORDER BY Created_date DESC LIMIT 100;");
+            		tf1.setText("");
+            		tf2.setText("");
+            		tf3.setText("");
+            		query("SELECT * FROM calls ORDER BY Created_date DESC LIMIT 500;");
             }
         });
 
@@ -250,7 +253,7 @@ public class GUI extends Application {
         });
     }
     public static void main(String[] args){
-        	query("SELECT * FROM calls ORDER BY Created_date DESC LIMIT 100;");
+        	query("SELECT * FROM calls ORDER BY Created_date DESC LIMIT 500;");
         launch(args);
     }
     public static void query(String line){
