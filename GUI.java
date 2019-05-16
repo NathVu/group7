@@ -226,12 +226,16 @@ public class GUI extends Application {
         root.setSpacing(50);
         root.setAlignment(Pos.TOP_CENTER);
 
+	/* You can active this scrollbar using the getChildren function */
+	
         ScrollBar hscroll = new ScrollBar();
         hscroll.setMin(0);
         hscroll.setMax(260);
         hscroll.setValue(100);
         hscroll.setOrientation(Orientation.HORIZONTAL);
 
+	/* Setting the size of the window */
+	    
         Scene scene = new Scene(root,1920,1080);
         scene.getStylesheets().add("GUI_CSS_Format.css");
 
