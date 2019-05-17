@@ -56,7 +56,7 @@ public class GUI extends Application {
         btn0.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 String id=tf1.getText();
-                if(tf1.getText().equals("")) {
+                if(tf1.getText().equals("")) { //display error window if empty textfield
                 		Alert a = new Alert(Alert.AlertType.ERROR);
                 		a.setTitle("Error Message");
                 		a.setHeaderText("Parameter not found");
@@ -92,6 +92,7 @@ public class GUI extends Application {
                 else {
                 		System.out.println(tf1.getText());
                     query("SELECT * FROM calls WHERE created_date BETWEEN '" + start + "' AND '" + end + "' ORDER BY Created_date ASC LIMIT 500;");
+                    // query for all calls between start date and end date
                 }
             }
         });
@@ -104,6 +105,7 @@ public class GUI extends Application {
             		tf2.setText("");
             		tf3.setText("");
             		query("SELECT * FROM calls ORDER BY Created_date DESC LIMIT 500;");
+            		// resets table and textfields
             }
         });
 
@@ -113,6 +115,9 @@ public class GUI extends Application {
         idCol.setMinWidth(75);
         idCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Vector, String>, ObservableValue<String>>() {
         	@Override
+        		/*
+        		 *  Alters the cell properties of the table to display a specific index of the data vector
+        		 */
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Vector, String> p) {
                 if (p.getValue() != null) 
                     return new SimpleStringProperty(p.getValue().get(0).toString());
@@ -241,6 +246,9 @@ public class GUI extends Application {
         primaryStage.show();
 
     }
+    /*
+     * Restricts the amount of characters than can be inputted into textfields
+     */
     public static void addTextLimiter(final TextField tf, final int maxLength) {
         tf.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -256,31 +264,29 @@ public class GUI extends Application {
         	query("SELECT * FROM calls ORDER BY Created_date DESC LIMIT 500;");
         launch(args);
     }
+    /*
+     * Accepts a string sql command, retrieves the rows from the database as vectors, and displays them in the table
+     */
     public static void query(String line){
     	 try {
      	 String url = "jdbc:postgresql://127.0.0.1:5438/postgres";
          Connection conn = DriverManager.getConnection(url,"ivan","NT0408");
          Statement stat = conn.createStatement();
-         //System.out.println(line);
          ResultSet rs = stat.executeQuery(line);
          ResultSetMetaData metaData = rs.getMetaData();
-         ObservableList<Vector> data = FXCollections.observableArrayList();
+         ObservableList<Vector> data = FXCollections.observableArrayList(); // Database rows stored in vectors inside an observablelist
          int columns = 8;
-         /*Vector columnNames = new Vector();
-         for (int i = 1; i <= 20; i++) {
-             System.out.println(metaData.getColumnName(i));
-         }*/
          while (rs.next()) {
              Vector row = new Vector(columns);
              for (int i = 1; i <= 20; i++) {
-             		if(i==1 || i==2 || i==3 || i==4 || i==6 || i==9 || i==10 || i==20) {
+             		if(i==1 || i==2 || i==3 || i==4 || i==6 || i==9 || i==10 || i==20) { //column indexes of the desired data fields
              			if(rs.getObject(i)!=null)
              				if(i==2 || i==3)
-             					row.addElement(rs.getObject(i).toString().substring(0,rs.getObject(i).toString().length()-2));	
+             					row.addElement(rs.getObject(i).toString().substring(0,rs.getObject(i).toString().length()-2));	 //cut off the millisecond portion of time
              				else
              					row.addElement(rs.getObject(i).toString());
              			else
-             				row.addElement(new String("N/A"));
+             				row.addElement(new String("N/A")); // display N/A if data is blank
              		}
              }	
              data.add(row);
