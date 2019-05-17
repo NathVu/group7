@@ -1,3 +1,5 @@
+/* The format of the entire foundation */
+
 .root {
     -fx-background-image: url("https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F38670528%2F108919755319%2F1%2Foriginal.jpg?auto=compress&s=32c728ebfab7bb7cab9cf42307962b37");
     -fx-background-size: cover;
@@ -12,6 +14,8 @@
     -fx-underline: false;
     -fx-effect: dropshadow(three-pass-box, whitesmoke, 45, 30, 0, 0);
 }
+
+/* Format for the text next to the input boxes */
 
 #te1 {
     -fx-font-weight: bolder;
@@ -34,6 +38,7 @@
     -fx-effect: dropshadow(three-pass-box, lightsteelblue, 10, 1, 0, 0);
 }
 
+/* Format for the column names inside the table */
 
 .label {
     -fx-background-color: lightsteelblue;
@@ -54,6 +59,8 @@
     -fx-background-color: lightgray;
 }
 
+/* Format for the Search button */
+
 .button {
     -fx-background-color: mistyrose;
     -fx-text-fill: black;
@@ -72,6 +79,8 @@
     -fx-background-color: aliceblue, ghostwhite, aliceblue;
 }
 
+/* Format for the Reset button */
+
 #Reset {
     -fx-background-color: lightcoral;
 }
@@ -84,6 +93,8 @@
     -fx-background-color: aliceblue, ghostwhite, aliceblue;
 }
 
+/* Format for the table itself */
+
 .table-view {
     -fx-background-color: ghostwhite;
     -fx-border-style: solid;
@@ -91,6 +102,8 @@
     -fx-opacity: 0.8;
     -fx-effect: dropshadow(three-pass-box, gainsboro, 18, 0.5, 6, 0);
 }
+
+/* Format for the scrollbars */ 
 
 .scroll-bar:horizontal {
     -fx-background-color: lightgray, gray, black;
